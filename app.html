@@ -31,6 +31,12 @@ input::placeholder{color:var(--faible)}
   border-radius:10px;font-weight:700;font-size:14px;transition:border-color .2s,color .2s}
 .btn-fantome:hover{border-color:var(--violet);color:var(--texte)}
 .btn-danger{background:linear-gradient(135deg,#c4566e,#8a3a4e)}
+.btn-son{position:fixed;top:14px;right:14px;z-index:70;width:42px;height:42px;border-radius:50%;
+  background:var(--panneau);border:1px solid var(--bord);color:var(--texte);font-size:18px;
+  display:flex;align-items:center;justify-content:center;transition:border-color .2s,transform .1s}
+.btn-son:hover{border-color:var(--violet)}
+.btn-son:active{transform:scale(.92)}
+.btn-son.coupe{color:var(--faible)}
 
 .ecran{display:none;max-width:1180px;margin:0 auto;padding:40px 24px 80px}
 .ecran.actif{display:block}
@@ -46,9 +52,10 @@ input::placeholder{color:var(--faible)}
   align-items:center;justify-content:center;text-align:center;padding:16px;
   background:radial-gradient(circle at 35% 30%,#3a2f63,#1a1430 70%);
   box-shadow:0 0 90px rgba(141,111,224,.28);transition:background 1.2s,box-shadow 1.2s}
-.village.jour .lune{background:radial-gradient(circle at 35% 30%,#f6ecd4,#d9c9a4 70%);
+.village.jour .lune,.village.vote .lune{background:radial-gradient(circle at 35% 30%,#f6ecd4,#d9c9a4 70%);
   box-shadow:0 0 110px rgba(255,217,160,.35)}
-.village.jour .phase-nom,.village.jour .chrono{color:#2a2114}
+.village.jour .phase-nom,.village.jour .chrono,
+.village.vote .phase-nom,.village.vote .chrono{color:#2a2114}
 .phase-nom{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(22px,4.4vw,34px);
   font-weight:700;line-height:1.1}
 .chrono{font-size:13px;font-weight:900;letter-spacing:.12em;color:var(--doux);margin-top:8px}
@@ -68,6 +75,58 @@ input::placeholder{color:var(--faible)}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .compteur-votes{font-size:11px;font-weight:900;color:var(--or)}
 
+/* ---------- Anneau de progression du chrono ---------- */
+.anneau{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
+  transform:rotate(-90deg);overflow:visible}
+.anneau-fond{fill:none;stroke:var(--bord);stroke-width:1.1}
+.anneau-jauge{fill:none;stroke:var(--violet);stroke-width:1.7;stroke-linecap:round;
+  transition:stroke-dashoffset .25s linear,stroke .4s}
+.village.jour .anneau-jauge{stroke:var(--or)}
+.anneau-jauge.urgent{stroke:var(--sang);animation:pulseAnneau 1s ease-in-out infinite}
+@keyframes pulseAnneau{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ---------- Passer au vote (phase jour) ---------- */
+#passageZone{text-align:center;margin-top:18px}
+#passageCompteur{margin-top:9px;font-size:13px;font-weight:800;color:var(--doux)}
+#btnPassage.actif{border-color:var(--or);color:var(--or)}
+
+/* ---------- Le vote au lever du jour ---------- */
+.lignes-vote{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:1}
+.lignes-vote path{fill:none;stroke:var(--sang);stroke-width:.5;opacity:.55;
+  stroke-linecap:round;transition:opacity .3s}
+.siege .jeton{position:relative;z-index:2}
+.siege.vise .jeton{border-color:var(--sang)}
+.siege.mon-vote .jeton{box-shadow:0 0 0 3px var(--or)}
+.compteur-votes{font-size:11px;font-weight:900;color:var(--or)}
+
+/* bandeau d'ouverture du vote */
+#bandeau{position:fixed;left:0;right:0;top:38%;z-index:60;text-align:center;pointer-events:none;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:700;
+  font-size:clamp(24px,5vw,42px);color:var(--or);text-shadow:0 2px 30px rgba(0,0,0,.8);
+  opacity:0;transform:translateY(10px)}
+#bandeau.actif{animation:bandeauPasse 2.4s ease forwards}
+@keyframes bandeauPasse{
+  0%{opacity:0;transform:translateY(10px)}
+  18%{opacity:1;transform:translateY(0)}
+  78%{opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-8px)}
+}
+
+/* liste de vote mobile (sous 600px) */
+#voteMobile{display:none;margin-top:18px;flex-direction:column;gap:10px}
+.carte-vote{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--panneau);
+  border:1px solid var(--bord);border-radius:12px}
+.carte-vote .jeton{width:42px;height:42px;font-size:18px;flex:none}
+.carte-vote .cv-nom{flex:1;font-weight:800;font-size:15px}
+.carte-vote .cv-nb{font-weight:900;color:var(--or);font-size:13px}
+.carte-vote.mon-vote{border-color:var(--or)}
+.btn-voter{background:linear-gradient(135deg,#c4566e,#8a3a4e);color:#fff;padding:11px 18px;
+  border-radius:10px;font-weight:800;font-size:14px}
+@media (max-width:600px){
+  #voteMobile.actif{display:flex}
+  #village.masque-mobile .siege.selectionnable{pointer-events:none}
+}
+
 /* ---------- Colonnes ---------- */
 .jeu{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start}
 .chat{background:var(--panneau);border:1px solid var(--bord);border-radius:16px;
@@ -83,6 +142,12 @@ input::placeholder{color:var(--faible)}
 .msg-txt{font-size:14px;line-height:1.45}
 .msg.systeme .msg-txt{color:var(--or);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:16px}
 .chat-saisie{display:flex;gap:8px;padding:12px;border-top:1px solid var(--bord)}
+.chat-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px 0}
+.chat-chips:empty{display:none}
+.chip{background:var(--carte);border:1px solid var(--bord);color:var(--doux);
+  padding:7px 11px;border-radius:999px;font-size:12.5px;font-weight:800;transition:border-color .15s,color .15s}
+.chip:hover{border-color:var(--violet);color:var(--texte)}
+.chip-retour{color:var(--faible)}
 
 .carte-role{border:1px solid var(--bord);border-radius:16px;padding:22px;margin-bottom:18px;
   background:linear-gradient(160deg,var(--carte),var(--panneau))}
@@ -105,10 +170,36 @@ input::placeholder{color:var(--faible)}
   .siege{width:60px;margin:-30px 0 0 -30px}
   .jeton{width:46px;height:46px;font-size:18px}
 }
+/* ---------- Animations (chantier #6) ---------- */
+/* Transitions de phase : voile qui monte du bas de l'écran */
+.transition-phase{position:fixed;inset:0;pointer-events:none;z-index:55;opacity:0}
+.transition-phase.coucher{animation:coucherSoleil 2s ease forwards;
+  background:linear-gradient(to top,rgba(15,13,26,.95),rgba(15,13,26,.4) 45%,transparent 75%)}
+.transition-phase.lever{animation:leverSoleil 2s ease forwards;
+  background:linear-gradient(to top,rgba(255,217,160,.55),rgba(255,200,120,.2) 45%,transparent 75%)}
+@keyframes coucherSoleil{0%{opacity:0;transform:translateY(40%)}35%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes leverSoleil{0%{opacity:0;transform:translateY(40%)}35%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+
+/* Carte de rôle : retournement 3D au lancement + reflet qui traverse */
+.carte-role{perspective:900px}
+.carte-role.flip{animation:carteFlip 1.6s cubic-bezier(.2,.8,.2,1)}
+@keyframes carteFlip{0%{transform:rotateY(92deg);opacity:0}55%{opacity:1}100%{transform:rotateY(0);opacity:1}}
+.carte-role.flip::after{content:'';position:absolute;inset:0;border-radius:16px;pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);
+  transform:translateX(-120%);animation:reflet 1.4s ease .4s}
+@keyframes reflet{to{transform:translateX(120%)}}
+
+/* Secousse brève sur mort violente */
+@keyframes secousse{0%,100%{transform:translate(0,0)}20%{transform:translate(-5px,3px)}
+  40%{transform:translate(5px,-3px)}60%{transform:translate(-4px,-2px)}80%{transform:translate(4px,2px)}}
+body.secousse{animation:secousse .22s ease}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+
+<button class="btn-son" id="btnSon" onclick="Ambiance.basculer()" aria-label="Couper ou remettre le son" title="Son">🔊</button>
 
 <!-- ══════════ CONNEXION ══════════ -->
 <section id="ecranAuth" class="ecran actif">
@@ -198,14 +289,26 @@ input::placeholder{color:var(--faible)}
 
 <!-- ══════════ PARTIE ══════════ -->
 <section id="ecranJeu" class="ecran">
+  <div id="bandeau"></div>
+  <div class="transition-phase" id="transPhase" aria-hidden="true"></div>
   <div class="jeu">
     <div>
       <div id="village" class="village">
+        <svg class="anneau" viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="anneau-fond" cx="50" cy="50" r="29"></circle>
+          <circle class="anneau-jauge" id="anneauJauge" cx="50" cy="50" r="29"></circle>
+        </svg>
+        <svg class="lignes-vote" id="lignesVote" viewBox="0 0 100 100" aria-hidden="true"></svg>
         <div class="lune">
           <div class="phase-nom" id="phaseNom">…</div>
           <div class="chrono" id="chrono"></div>
         </div>
       </div>
+      <div id="passageZone" style="display:none">
+        <button class="btn-fantome" id="btnPassage" onclick="basculerPassage()">Passer au vote</button>
+        <div id="passageCompteur"></div>
+      </div>
+      <div id="voteMobile"></div>
       <p class="muet" id="consigne" style="text-align:center;margin-top:20px;font-size:15px"></p>
     </div>
 
@@ -226,6 +329,7 @@ input::placeholder{color:var(--faible)}
       <div class="chat">
         <div class="chat-onglets" id="chatOnglets"></div>
         <div class="chat-fil" id="chatFil"></div>
+        <div class="chat-chips" id="chatChips"></div>
         <div class="chat-saisie">
           <input id="chatSaisie" placeholder="Écris pour te défendre…" maxlength="500"
                  onkeydown="if(event.key==='Enter')envoyerMessage()">
@@ -279,8 +383,14 @@ const ROLES = {
 const AVATARS = {fauve:'🦊',roux:'🦝',duchesse:'🐈',pie:'🐦',chaperon:'🧕'};
 
 /* ---------- État ---------- */
-let moi=null, profil=null, partie=null, joueurs=[], roles=[], votes=[], messages=[];
+let moi=null, profil=null, partie=null, joueurs=[], roles=[], votes=[], messages=[], passages=[];
 let partieId=null, canal=null, canalChat='village', minuteur=null, cibleChoisie=null;
+
+/* Durées d'affichage de l'anneau uniquement (le timing fait foi côté serveur via
+   phase_fin_le — ceci ne décide rien, ça ne fait qu'estimer la fraction visuelle).
+   À garder aligné sur duree_phase() côté Postgres. */
+const DUREES = {nuit:75, jour:150, vote:45, chasseur:30};
+const ANNEAU_CIRC = 2 * Math.PI * 29;   // r=29 dans le viewBox 0..100
 
 const $ = id => document.getElementById(id);
 const avatarDe = j => AVATARS[j.profils?.avatar] || '🐺';
@@ -393,12 +503,15 @@ const retourLobby = ouvrirLobby;
 /* ═══════════ ABONNEMENT TEMPS RÉEL ═══════════ */
 async function entrerDansPartie(id){
   partieId = id;
+  mortsConnus = new Set(); mortsInit = false; roleAnime = false;
+  phasePrec = null; cyclePrec = null;
   if(canal) sb.removeChannel(canal);
 
   canal = sb.channel('partie:' + id)
     .on('postgres_changes',{event:'*',schema:'public',table:'parties',filter:`id=eq.${id}`}, rafraichir)
     .on('postgres_changes',{event:'*',schema:'public',table:'joueurs_partie',filter:`partie_id=eq.${id}`}, rafraichir)
     .on('postgres_changes',{event:'*',schema:'public',table:'votes',filter:`partie_id=eq.${id}`}, rafraichir)
+    .on('postgres_changes',{event:'*',schema:'public',table:'passages',filter:`partie_id=eq.${id}`}, rafraichir)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:`partie_id=eq.${id}`}, chargerMessages)
     .subscribe();
 
@@ -407,13 +520,14 @@ async function entrerDansPartie(id){
 
 async function rafraichir(){
   if(!partieId) return;
-  const [p, j, r, v] = await Promise.all([
+  const [p, j, r, v, pa] = await Promise.all([
     sb.from('parties').select('*').eq('id', partieId).single(),
     sb.from('joueurs_partie').select('*, profils(pseudo, avatar, est_bot)').eq('partie_id', partieId).order('place'),
     sb.from('roles_joueurs').select('*').eq('partie_id', partieId),
-    sb.from('votes').select('*').eq('partie_id', partieId)
+    sb.from('votes').select('*').eq('partie_id', partieId),
+    sb.from('passages').select('*').eq('partie_id', partieId)
   ]);
-  partie = p.data; joueurs = j.data || []; roles = r.data || []; votes = v.data || [];
+  partie = p.data; joueurs = j.data || []; roles = r.data || []; votes = v.data || []; passages = pa.data || [];
   if(!partie) return ouvrirLobby();
 
   if(partie.statut === 'lobby')          rendreSalon();
@@ -488,47 +602,192 @@ const LIBELLES = {
   chasseur: {nom:'Le chasseur tire',     consigne:'Un chasseur est tombé. Son dernier geste décide.'}
 };
 
+let phasePrec = null, cyclePrec = null;
 function rendreJeu(){
   montrer('ecranJeu');
-  const nuitEnCours = partie.statut !== 'jour';
-  $('village').className = 'village' + (partie.statut === 'jour' ? ' jour' : '');
+  const clair = partie.statut === 'jour' || partie.statut === 'vote';
+  $('village').className = 'village'
+    + (partie.statut === 'jour' ? ' jour' : '')
+    + (partie.statut === 'vote' ? ' vote masque-mobile' : '');
   $('phaseNom').textContent = LIBELLES[partie.statut]?.nom || '';
   $('consigne').textContent = LIBELLES[partie.statut]?.consigne || '';
 
+  // Bandeau d'ouverture du vote, une seule fois par tour de vote
+  if(partie.statut === 'vote' && !(phasePrec === 'vote' && cyclePrec === partie.cycle)){
+    ouvrirBandeau('Le village doit désigner un coupable.');
+  }
+  // Transition jour ↔ nuit (voile qui monte + ponctuation sonore)
+  if(phasePrec && phasePrec !== partie.statut){
+    if(partie.statut === 'nuit'){ transitionPhase('coucher'); Ambiance.cue('cloche2'); }
+    else if(partie.statut === 'jour'){ transitionPhase('lever'); Ambiance.cue('coq'); }
+  }
+  Ambiance.phase(partie.statut === 'nuit' ? 'nuit' : 'jour');   // nappe (fondu croisé, idempotent)
+  phasePrec = partie.statut; cyclePrec = partie.cycle;
+
+  checkMorts();
   rendreCercle();
+  rendreLignesVote();
+  rendreVoteMobile();
   rendreCarteRole();
   rendreAction();
+  rendrePassage();
   rendreOnglets();
+  rendreChips();
   lancerChrono();
 }
+
+function ouvrirBandeau(txt){
+  const b = $('bandeau');
+  b.textContent = txt;
+  b.classList.remove('actif');
+  void b.offsetWidth;         // relance l'animation
+  b.classList.add('actif');
+}
+
+function transitionPhase(type){
+  const el = $('transPhase');
+  el.className = 'transition-phase';
+  void el.offsetWidth;
+  el.classList.add(type);
+}
+
+function secousse(){
+  document.body.classList.remove('secousse');
+  void document.body.offsetWidth;
+  document.body.classList.add('secousse');
+  setTimeout(() => document.body.classList.remove('secousse'), 260);
+}
+
+/* Secousse à chaque nouvelle mort violente ; ignore les morts déjà connues
+   (pas de secousse en rejoignant une partie où des joueurs sont déjà tombés). */
+let mortsConnus = new Set(), mortsInit = false, roleAnime = false;
+function checkMorts(){
+  joueurs.forEach(j => {
+    if(!j.vivant && !mortsConnus.has(j.user_id)){
+      mortsConnus.add(j.user_id);
+      if(mortsInit){
+        const c = j.cause_mort || '';
+        if(/dévor/i.test(c)){ secousse(); Ambiance.cue('grognement'); }
+        else if(/chasseur|abattu/i.test(c)){ secousse(); Ambiance.cue('detonation'); }
+        else if(/lynch/i.test(c)){ Ambiance.cue('foule'); }
+      }
+    }
+  });
+  mortsInit = true;
+}
+
+/* ---------- « Passer au vote » : n'apparaît que le jour ---------- */
+function rendrePassage(){
+  const zone = $('passageZone');
+  if(partie.statut !== 'jour' || !suisVivant()){ zone.style.display = 'none'; return; }
+  zone.style.display = 'block';
+
+  const vivants = joueurs.filter(j => j.vivant).length;
+  const veulent = passages.filter(p => p.cycle === partie.cycle).length;
+  const jaiClique = passages.some(p => p.cycle === partie.cycle && p.user_id === moi.id);
+
+  const btn = $('btnPassage');
+  btn.textContent = jaiClique ? 'Je ne veux plus voter' : 'Passer au vote';
+  btn.classList.toggle('actif', jaiClique);
+  $('passageCompteur').textContent = veulent
+    ? `${veulent} / ${vivants} veulent voter`
+    : 'Personne ne demande le vote pour l\'instant.';
+}
+
+async function basculerPassage(){
+  const {error} = await sb.rpc('demander_passage', {p_partie:partieId});
+  if(error) alert(error.message);
+}
+
+const compteVotes = id => votes.filter(v => v.cycle === partie.cycle && v.cible_id === id).length;
+const monVoteCible = () => votes.find(v => v.cycle === partie.cycle && v.votant_id === moi.id)?.cible_id;
 
 function rendreCercle(){
   const vil = $('village');
   vil.querySelectorAll('.siege').forEach(e => e.remove());
   const n = joueurs.length, cliquable = phaseSelectionnable();
+  const enVote = partie.statut === 'vote';
+  const maxV = Math.max(0, ...joueurs.map(j => compteVotes(j.user_id)));
+  const maCible = monVoteCible();
 
   joueurs.forEach((j, i) => {
     const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
+    const nbVotes = compteVotes(j.user_id);
+    const vise = enVote && nbVotes > 0 && nbVotes === maxV;
     const el = document.createElement('div');
     el.className = 'siege'
       + (j.vivant ? '' : ' mort')
       + (j.user_id === moi.id ? ' moi' : '')
       + (estDeMaMeute(j) ? ' meute' : '')
       + (cibleChoisie === j.user_id ? ' cible' : '')
+      + (vise ? ' vise' : '')
+      + (enVote && maCible === j.user_id ? ' mon-vote' : '')
       + (cliquable && j.vivant && j.user_id !== moi.id ? ' selectionnable' : '');
     el.style.left = (50 + 42 * Math.cos(angle)) + '%';
     el.style.top  = (50 + 42 * Math.sin(angle)) + '%';
 
-    const nbVotes = votes.filter(v => v.cycle === partie.cycle && v.cible_id === j.user_id).length;
-    el.innerHTML = `<div class="jeton">${avatarDe(j)}</div>
+    const halo = vise ? ` style="box-shadow:0 0 0 ${3 + nbVotes * 2}px rgba(196,86,110,.22)"` : '';
+    el.innerHTML = `<div class="jeton"${halo}>${avatarDe(j)}</div>
       <div class="nom-siege">${j.profils?.pseudo || '…'}${estBot(j) ? ' 🤖' : ''}</div>
-      ${partie.statut === 'vote' && nbVotes ? `<div class="compteur-votes">${nbVotes} ✋</div>` : ''}`;
+      ${enVote && nbVotes ? `<div class="compteur-votes">${nbVotes} ✋</div>` : ''}`;
 
     if(cliquable && j.vivant && j.user_id !== moi.id){
-      el.onclick = () => { cibleChoisie = j.user_id; rendreCercle(); rendreAction(); };
+      el.onclick = enVote
+        ? () => voterDirect(j.user_id)
+        : () => { cibleChoisie = j.user_id; rendreCercle(); rendreAction(); };
     }
     vil.appendChild(el);
   });
+}
+
+/* Vote immédiat (public, modifiable tant que la phase dure) */
+async function voterDirect(cible){
+  const {error} = await sb.rpc('voter', {p_partie:partieId, p_cible:cible});
+  if(error) return alert(error.message);
+  Ambiance.cue('clack');
+  // le realtime rafraîchit ; on redessine tout de suite pour la réactivité
+  const v = votes.find(x => x.cycle === partie.cycle && x.votant_id === moi.id);
+  if(v) v.cible_id = cible; else votes.push({cycle:partie.cycle, votant_id:moi.id, cible_id:cible});
+  rendreCercle(); rendreLignesVote(); rendreVoteMobile();
+}
+
+/* Lignes courbes votant → voté (le vote est public) */
+function rendreLignesVote(){
+  const svg = $('lignesVote');
+  if(partie.statut !== 'vote'){ svg.innerHTML = ''; return; }
+  const n = joueurs.length;
+  const pos = {};
+  joueurs.forEach((j, i) => {
+    const a = (i / n) * 2 * Math.PI - Math.PI / 2;
+    pos[j.user_id] = {x: 50 + 42 * Math.cos(a), y: 50 + 42 * Math.sin(a)};
+  });
+  svg.innerHTML = votes.filter(v => v.cycle === partie.cycle)
+    .map(v => {
+      const a = pos[v.votant_id], b = pos[v.cible_id];
+      if(!a || !b) return '';
+      // point de contrôle tiré vers le centre pour la courbe
+      const cx = (a.x + b.x) / 2 + (50 - (a.x + b.x) / 2) * .45;
+      const cy = (a.y + b.y) / 2 + (50 - (a.y + b.y) / 2) * .45;
+      return `<path d="M${a.x} ${a.y} Q${cx} ${cy} ${b.x} ${b.y}"/>`;
+    }).join('');
+}
+
+/* Liste de vote empilée pour le mobile (cercle trop petit au doigt) */
+function rendreVoteMobile(){
+  const zone = $('voteMobile');
+  if(partie.statut !== 'vote' || !suisVivant()){ zone.className = ''; zone.innerHTML = ''; return; }
+  zone.className = 'actif';
+  const maCible = monVoteCible();
+  zone.innerHTML = joueurs.filter(j => j.vivant && j.user_id !== moi.id).map(j => {
+    const nb = compteVotes(j.user_id);
+    const moi_ = maCible === j.user_id;
+    return `<div class="carte-vote${moi_ ? ' mon-vote' : ''}">
+      <div class="jeton">${avatarDe(j)}</div>
+      <div class="cv-nom">${j.profils?.pseudo || '…'}${estBot(j) ? ' 🤖' : ''}</div>
+      ${nb ? `<div class="cv-nb">${nb} ✋</div>` : ''}
+      <button class="btn-voter" onclick="voterDirect('${j.user_id}')">${moi_ ? 'Voté ✓' : 'Voter'}</button>
+    </div>`;
+  }).join('');
 }
 
 const estDeMaMeute = j => suisLoup() && roles.some(r => r.user_id === j.user_id && r.camp === 'loups');
@@ -559,6 +818,7 @@ function rendreCarteRole(){
   if(!r) return;
   const info = ROLES[r.role];
   $('carteRole').className = 'carte-role' + (r.camp === 'loups' ? ' loup' : '');
+  if(!roleAnime){ $('carteRole').classList.add('flip'); roleAnime = true; }   // révélation 3D, 1×/partie
   $('roleCamp').textContent = info.camp;
   $('roleNom').textContent  = info.emoji + ' ' + info.nom;
   $('roleDesc').textContent = info.desc;
@@ -587,9 +847,12 @@ function rendreAction(){
 
   if(partie.statut === 'vote'){
     $('actionTitre').textContent = 'Ton vote';
-    $('actionDesc').textContent  = 'Clique sur un joueur du cercle, puis confirme. Égalité = personne ne meurt.';
-    B.innerHTML = `<button class="btn" ${cible?'':'disabled'} onclick="confirmerVote()">
-      Voter contre ${nomCible}</button>`;
+    const maCible = monVoteCible();
+    const nomVote = joueurs.find(j => j.user_id === maCible)?.profils?.pseudo;
+    $('actionDesc').textContent = maCible
+      ? `Tu votes contre ${nomVote}. Clique un autre joueur pour changer d'avis. Égalité = personne ne meurt.`
+      : 'Clique sur un joueur (le cercle, ou la liste sur mobile). Tu peux changer d\'avis tant que la phase dure. Égalité = personne ne meurt.';
+    B.innerHTML = '';
     return;
   }
 
@@ -625,6 +888,9 @@ async function agir(action){
     {p_partie:partieId, p_action:action, p_cible:cibleChoisie, p_cible2:null});
   if(error) return alert(error.message);
 
+  if(action === 'sonder') Ambiance.cue('tintement');
+  else if(action === 'potion_vie' || action === 'potion_mort') Ambiance.cue('bouchon');
+
   if(action === 'sonder'){
     const {data} = await sb.from('roles_joueurs').select('role')
       .eq('partie_id', partieId).eq('user_id', cibleChoisie).single();
@@ -648,21 +914,38 @@ async function confirmerTir(){
   cibleChoisie = null;
 }
 
-/* ---------- Chronomètre : l'hôte fait avancer la phase ---------- */
+/* ---------- Chronomètre + anneau : l'hôte fait avancer la phase ---------- */
 function lancerChrono(){
   clearInterval(minuteur);
-  if(!partie.phase_fin_le){ $('chrono').textContent = ''; return; }
-  const fin = new Date(partie.phase_fin_le).getTime();
+  const jauge = $('anneauJauge');
+  jauge.style.strokeDasharray = ANNEAU_CIRC;
 
-  minuteur = setInterval(async () => {
-    const reste = Math.max(0, Math.floor((fin - Date.now()) / 1000));
+  if(!partie.phase_fin_le){
+    $('chrono').textContent = '';
+    jauge.style.strokeDashoffset = ANNEAU_CIRC;   // anneau vide, pas de compte à rebours
+    jauge.classList.remove('urgent');
+    return;
+  }
+  const fin = new Date(partie.phase_fin_le).getTime();
+  const total = DUREES[partie.statut] || Math.max(1, (fin - Date.now()) / 1000);
+
+  const tic = async () => {
+    const resteMs = Math.max(0, fin - Date.now());
+    const reste = Math.floor(resteMs / 1000);
     $('chrono').textContent = String(Math.floor(reste/60)).padStart(2,'0') + ':' +
                               String(reste % 60).padStart(2,'0');
-    if(reste === 0){
+
+    const frac = Math.max(0, Math.min(1, (resteMs/1000) / total));
+    jauge.style.strokeDashoffset = ANNEAU_CIRC * (1 - frac);
+    jauge.classList.toggle('urgent', resteMs > 0 && resteMs <= 15000);
+
+    if(resteMs === 0){
       clearInterval(minuteur);
       if(suisHote()) await sb.rpc('resoudre_phase', {p_partie:partieId});
     }
-  }, 250);
+  };
+  tic();
+  minuteur = setInterval(tic, 250);
 }
 
 /* ═══════════ CHAT ═══════════ */
@@ -682,7 +965,60 @@ function rendreOnglets(){
     : (suisVivant() ? 'Le village dort. Silence.' : 'Les morts ne parlent qu\'entre eux.');
 }
 
-function changerCanal(id){ canalChat = id; rendreOnglets(); chargerMessages(); }
+function changerCanal(id){ canalChat = id; rendreOnglets(); rendreChips(); chargerMessages(); }
+
+/* ---------- Chat rapide : puces adaptées à la phase et au rôle ----------
+   Un message rapide reste un message NORMAL : « Je vote X » écrit une phrase,
+   ça ne pose PAS le vote. Le bluff (dire X, voter Y) fait partie du jeu. */
+let pickTemplate = null;
+function peutParlerMaintenant(){
+  return suisVivant()
+    ? (partie.statut === 'jour' || partie.statut === 'vote' || canalChat === 'loups')
+    : canalChat === 'morts';
+}
+function rendreChips(){
+  const box = $('chatChips');
+  pickTemplate = null;
+  if(!partie || !peutParlerMaintenant()){ box.innerHTML = ''; return; }
+
+  let chips;
+  if(canalChat === 'loups'){
+    chips = [{t:'On mange {j}', pick:true}, {t:"D'accord"}, {t:'Pas lui'}];
+  } else if(partie.statut === 'jour' || partie.statut === 'vote'){
+    chips = [
+      {t:'Je vote {j}', pick:true},
+      {t:'{j} est suspect', pick:true},
+      {t:'Je défends {j}', pick:true},
+      {t:"J'ai vu {j}", pick:true},
+      {t:'Passons au vote'},
+      {t:'Je suis Voyante'}, {t:'Je suis Sorcière'}, {t:'Je suis Chasseur'}
+    ];
+  } else { box.innerHTML = ''; return; }   // cimetière : discussion libre
+
+  window.__chips = chips;
+  box.innerHTML = chips.map((c, i) =>
+    `<button class="chip" onclick="chipClic(${i})">${echapper(c.t.replace('{j}', '…'))}</button>`).join('');
+}
+function chipClic(i){
+  const c = window.__chips[i];
+  if(c.pick) ouvrirPicker(c.t); else envoiRapide(c.t);
+}
+function ouvrirPicker(tpl){
+  pickTemplate = tpl;
+  const vivants = joueurs.filter(j => j.vivant && j.user_id !== moi.id);
+  $('chatChips').innerHTML = `<button class="chip chip-retour" onclick="rendreChips()">←</button>`
+    + vivants.map(j => `<button class="chip" onclick="envoiPick('${j.user_id}')">${echapper(j.profils?.pseudo || '…')}</button>`).join('');
+}
+function envoiPick(uid){
+  const j = joueurs.find(x => x.user_id === uid);
+  if(pickTemplate) envoiRapide(pickTemplate.replace('{j}', j?.profils?.pseudo || 'quelqu\'un'));
+  rendreChips();
+}
+async function envoiRapide(txt){
+  const {error} = await sb.from('messages')
+    .insert({partie_id:partieId, user_id:moi.id, canal:canalChat, contenu:txt});
+  if(error) alert("Tu ne peux pas parler sur ce canal maintenant.");
+}
 
 async function chargerMessages(){
   const {data} = await sb.from('messages')
@@ -690,11 +1026,13 @@ async function chargerMessages(){
     .eq('canal', canalChat).order('cree_le').limit(100);
   messages = data || [];
 
-  $('chatFil').innerHTML = messages.length ? messages.map(m => `
-    <div class="msg">
-      <div class="msg-nom">${m.profils?.pseudo || '—'}</div>
+  $('chatFil').innerHTML = messages.length ? messages.map(m => {
+      const sys = m.user_id == null;               // message du narrateur (conteur)
+      return `<div class="msg${sys ? ' systeme' : ''}">
+      ${sys ? '' : `<div class="msg-nom">${m.profils?.pseudo || '—'}</div>`}
       <div class="msg-txt">${echapper(m.contenu)}</div>
-    </div>`).join('')
+    </div>`;
+    }).join('')
     : `<div class="vide" style="padding:20px">Personne n'a encore parlé.</div>`;
   $('chatFil').scrollTop = $('chatFil').scrollHeight;
 }
@@ -715,6 +1053,7 @@ const echapper = s => s.replace(/[&<>"']/g, c =>
 function rendreFin(){
   montrer('ecranFin');
   clearInterval(minuteur);
+  if(partie.vainqueur) Ambiance.cue('victoire_' + partie.vainqueur);
   const titres = {
     loups   : ['La meute a gagné', 'Le village est tombé. Il ne reste que des crocs.'],
     village : ['Le village a gagné', 'Les loups sont démasqués. Le hameau peut dormir.'],
@@ -739,6 +1078,142 @@ function rendreFin(){
     </div>`;
   }).join('');
 }
+
+/* ═══════════ SON — moteur WebAudio 100% synthétisé (aucun fichier) ═══════════
+   - Bouton de coupure toujours visible ; l'état vit ici, PAS dans localStorage.
+   - Rien ne démarre avant une interaction (politique autoplay des navigateurs).
+   - Nappes nuit/jour en fondu croisé de ~2 s ; ponctuations one-shot.
+   - Toute la synthèse est gardée par des try/catch : un souci audio ne casse
+     jamais le jeu. */
+const Ambiance = (() => {
+  let ctx, master, coupe = false, amb = null, ambType = null, desire = null;
+  const T = () => ctx.currentTime;
+
+  function init(){
+    if(ctx) return;
+    try {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      master = ctx.createGain();
+      master.gain.value = coupe ? 0 : .5;
+      master.connect(ctx.destination);
+    } catch(e){ ctx = null; }
+  }
+  function debloquer(){
+    init();
+    if(!ctx) return;
+    if(ctx.state === 'suspended') ctx.resume();
+    if(desire){ const d = desire; ambType = null; phase(d); }   // démarre la nappe voulue
+  }
+  function basculer(){
+    coupe = !coupe;
+    const b = document.getElementById('btnSon');
+    if(b){ b.textContent = coupe ? '🔇' : '🔊'; b.classList.toggle('coupe', coupe); }
+    if(master) master.gain.setTargetAtTime(coupe ? 0 : .5, T(), .1);
+    if(!coupe) debloquer();
+  }
+
+  // --- bruit réutilisable ---
+  let buf = null;
+  function bruit(){
+    if(buf) return buf;
+    const n = ctx.sampleRate * 2, b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0);
+    let last = 0;
+    for(let i = 0; i < n; i++){ const w = Math.random() * 2 - 1; last = (last + .02 * w) / 1.02; d[i] = last * 3.2; }
+    buf = b; return b;
+  }
+  const srcBruit = loop => { const s = ctx.createBufferSource(); s.buffer = bruit(); s.loop = !!loop; return s; };
+
+  // --- briques de synthèse ---
+  function ton(freq, dur, type, gain, dest){
+    const o = ctx.createOscillator(), g = ctx.createGain(), t = T();
+    o.type = type || 'sine'; o.frequency.value = freq; g.gain.value = 0;
+    o.connect(g); g.connect(dest || master);
+    g.gain.linearRampToValueAtTime(gain, t + .01);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.start(t); o.stop(t + dur + .05);
+    return o;
+  }
+  function souffle(dur, freq, gain, type){
+    const s = srcBruit(false), f = ctx.createBiquadFilter(), g = ctx.createGain(), t = T();
+    f.type = type || 'bandpass'; f.frequency.value = freq; f.Q.value = 1;
+    s.connect(f); f.connect(g); g.connect(master); g.gain.value = 0;
+    g.gain.linearRampToValueAtTime(gain, t + .006);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    s.start(t); s.stop(t + dur + .05);
+  }
+  const attends = (fn, ms) => setTimeout(() => { try { if(ctx && !coupe) fn(); } catch(e){} }, ms);
+
+  // --- nappes en fondu croisé ---
+  function phase(type){                 // 'nuit' | 'jour'
+    desire = type;
+    if(!ctx || ambType === type) return;
+    ambType = type;
+    const anc = amb;
+    if(anc){
+      try { anc.g.gain.cancelScheduledValues(T()); anc.g.gain.setTargetAtTime(0, T(), .7); } catch(e){}
+      setTimeout(() => { try { anc.s.stop(); } catch(e){} anc.timers.forEach(clearTimeout); }, 2300);
+    }
+    let g, s;
+    try {
+      g = ctx.createGain(); g.gain.value = 0; g.connect(master);
+      s = srcBruit(true);
+      const f = ctx.createBiquadFilter(); f.type = 'lowpass';
+      f.frequency.value = type === 'nuit' ? 360 : 950;
+      s.connect(f); f.connect(g); s.start();
+      g.gain.setTargetAtTime(type === 'nuit' ? .11 : .09, T(), .9);
+    } catch(e){ return; }
+    const local = { s, g, timers: [] };
+    const boucle = () => {
+      if(ambType !== type) return;
+      if(!coupe){
+        if(type === 'nuit'){ Math.random() < .55 ? hibou() : hurlementLoin(); }
+        else oiseau();
+      }
+      local.timers.push(setTimeout(boucle, type === 'nuit' ? 9000 + Math.random() * 9000 : 4500 + Math.random() * 5000));
+    };
+    local.timers.push(setTimeout(boucle, 3500));
+    amb = local;
+  }
+
+  // --- éléments d'ambiance ---
+  function hibou(){ const f = 420 + Math.random() * 60; ton(f, .28, 'sine', .05); attends(() => ton(f - 40, .5, 'sine', .05), 320); }
+  function hurlementLoin(){ hurlement(.03); }
+  function oiseau(){ const f = 2200 + Math.random() * 800; for(let i = 0; i < 3; i++) attends(() => ton(f + i * 120, .09, 'sine', .04), i * 90); }
+
+  // --- ponctuations ---
+  function cloche(n){ for(let i = 0; i < (n || 1); i++) attends(() => { ton(660, 2.4, 'sine', .22); ton(1320, 1.6, 'sine', .07); ton(990, 2, 'sine', .05); }, i * 900); }
+  function coq(){ [0, 130, 320, 520].forEach((d, i) => attends(() => ton([720, 900, 760, 620][i], .18, 'square', .06), d)); }
+  function grognement(){ ton(70, .5, 'sawtooth', .18); souffle(.5, 180, .12, 'lowpass'); }
+  function detonation(){ souffle(.35, 90, .5, 'lowpass'); ton(60, .3, 'sine', .3); }
+  function foule(){ const s = srcBruit(false), f = ctx.createBiquadFilter(), g = ctx.createGain(), t = T();
+    f.type = 'lowpass'; f.frequency.value = 500; s.connect(f); f.connect(g); g.connect(master); g.gain.value = 0;
+    g.gain.linearRampToValueAtTime(.16, t + .7); g.gain.exponentialRampToValueAtTime(.0001, t + 1.8);
+    s.start(t); s.stop(t + 1.9); }
+  function tintement(){ ton(2100, 1.3, 'sine', .12); attends(() => ton(3150, 1, 'sine', .07), 60); }
+  function bouchon(){ souffle(.03, 800, .3, 'bandpass'); attends(() => souffle(.45, 2600, .09, 'highpass'), 60); }
+  function harpe(){ [523, 659, 784, 1046].forEach((f, i) => attends(() => ton(f, 1.6, 'triangle', .12), i * 70)); }
+  function hurlement(gain){
+    try {
+      const o = ctx.createOscillator(), g = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain(), t = T();
+      o.type = 'sawtooth'; g.gain.value = 0; o.connect(g); g.connect(master);
+      lfo.type = 'sine'; lfo.frequency.value = 6; lg.gain.value = 12; lfo.connect(lg); lg.connect(o.frequency);
+      o.frequency.setValueAtTime(300, t); o.frequency.linearRampToValueAtTime(620, t + .5); o.frequency.linearRampToValueAtTime(280, t + 1.3);
+      g.gain.linearRampToValueAtTime(gain || .16, t + .15); g.gain.exponentialRampToValueAtTime(.0001, t + 1.4);
+      o.start(t); lfo.start(t); o.stop(t + 1.45); lfo.stop(t + 1.45);
+    } catch(e){}
+  }
+
+  const cue = nom => { if(!ctx || coupe) return; try { ({
+    cloche2: () => cloche(2), coq, grognement, detonation, foule, tintement, bouchon,
+    clack: () => souffle(.07, 1500, .35, 'bandpass'),
+    victoire_village: () => cloche(4), victoire_loups: () => hurlement(.2), victoire_amoureux: harpe
+  })[nom]?.(); } catch(e){} };
+
+  return { debloquer, basculer, phase, cue };
+})();
+// Déblocage au premier geste (autoplay) + resynchro de la nappe
+['pointerdown','keydown','touchstart'].forEach(ev =>
+  document.addEventListener(ev, () => Ambiance.debloquer(), { once: true }));
 
 /* ═══════════ DÉMARRAGE ═══════════ */
 sb.auth.onAuthStateChange((_e, session) => { if(!session) montrer('ecranAuth'); });
