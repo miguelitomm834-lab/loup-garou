@@ -15,7 +15,12 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--nuit);font-family:'Nunito',sans-serif;color:var(--texte);min-height:100vh}
+body{margin:0;font-family:'Nunito',sans-serif;color:var(--texte);min-height:100vh;
+  background:
+    radial-gradient(1100px 720px at 50% -18%, #1c1636 0%, transparent 60%),
+    radial-gradient(760px 560px at 88% 118%, #191228 0%, transparent 55%),
+    radial-gradient(700px 500px at 8% 108%, #15101f 0%, transparent 55%),
+    var(--nuit)}
 h1,h2,h3{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:700;margin:0}
 button{font-family:inherit;cursor:pointer;border:none}
 button:focus-visible,input:focus-visible{outline:2px solid var(--violet-clair);outline-offset:2px}
@@ -31,9 +36,10 @@ input::placeholder{color:var(--faible)}
   border-radius:10px;font-weight:700;font-size:14px;transition:border-color .2s,color .2s}
 .btn-fantome:hover{border-color:var(--violet);color:var(--texte)}
 .btn-danger{background:linear-gradient(135deg,#c4566e,#8a3a4e)}
-.btn-son{position:fixed;top:14px;right:14px;z-index:70;width:42px;height:42px;border-radius:50%;
-  background:var(--panneau);border:1px solid var(--bord);color:var(--texte);font-size:18px;
-  display:flex;align-items:center;justify-content:center;transition:border-color .2s,transform .1s}
+.btn-son{position:fixed;top:16px;right:16px;z-index:70;width:44px;height:44px;border-radius:50%;
+  background:rgba(28,23,49,.75);backdrop-filter:blur(8px);border:1px solid var(--bord);color:var(--texte);
+  font-size:18px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 20px rgba(0,0,0,.4);transition:border-color .2s,transform .1s,box-shadow .2s}
 .btn-son:hover{border-color:var(--violet)}
 .btn-son:active{transform:scale(.92)}
 .btn-son.coupe{color:var(--faible)}
@@ -43,30 +49,40 @@ input::placeholder{color:var(--faible)}
 .centre{max-width:440px;margin:0 auto;padding-top:8vh}
 .eyebrow{font-size:11px;letter-spacing:.22em;font-weight:900;color:var(--violet-clair);
   text-transform:uppercase;margin-bottom:14px}
-.panneau{background:var(--panneau);border:1px solid var(--bord);border-radius:16px;padding:26px}
+.panneau{background:linear-gradient(165deg,#191333,var(--panneau));border:1px solid var(--bord);
+  border-radius:16px;padding:26px;box-shadow:0 12px 40px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.04)}
 .muet{color:var(--faible);font-size:13.5px}
 
 /* ---------- Cercle du village : l'élément signature ---------- */
 .village{position:relative;width:min(560px,88vw);aspect-ratio:1;margin:0 auto}
 .lune{position:absolute;inset:22%;border-radius:50%;display:flex;flex-direction:column;
   align-items:center;justify-content:center;text-align:center;padding:16px;
-  background:radial-gradient(circle at 35% 30%,#3a2f63,#1a1430 70%);
-  box-shadow:0 0 90px rgba(141,111,224,.28);transition:background 1.2s,box-shadow 1.2s}
-.village.jour .lune,.village.vote .lune{background:radial-gradient(circle at 35% 30%,#f6ecd4,#d9c9a4 70%);
-  box-shadow:0 0 110px rgba(255,217,160,.35)}
+  border:1px solid rgba(141,111,224,.16);
+  background:radial-gradient(circle at 38% 30%,#413466 0%,#251b48 44%,#150f2c 76%);
+  box-shadow:0 0 120px rgba(141,111,224,.30),
+    inset 20px 24px 60px rgba(150,120,230,.10),
+    inset -26px -30px 72px rgba(0,0,0,.55);
+  transition:background 1.2s,box-shadow 1.2s,border-color 1.2s}
+.village.jour .lune,.village.vote .lune{border-color:rgba(255,217,160,.35);
+  background:radial-gradient(circle at 38% 30%,#fcf2da 0%,#eddaad 45%,#d4be8f 80%);
+  box-shadow:0 0 135px rgba(255,217,160,.42),
+    inset -26px -30px 72px rgba(120,90,40,.22)}
 .village.jour .phase-nom,.village.jour .chrono,
 .village.vote .phase-nom,.village.vote .chrono{color:#2a2114}
 .phase-nom{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(22px,4.4vw,34px);
-  font-weight:700;line-height:1.1}
+  font-weight:700;line-height:1.1;text-shadow:0 2px 24px rgba(141,111,224,.55)}
+.village.jour .phase-nom,.village.vote .phase-nom{text-shadow:0 2px 18px rgba(120,90,40,.35)}
 .chrono{font-size:13px;font-weight:900;letter-spacing:.12em;color:var(--doux);margin-top:8px}
 
 .siege{position:absolute;width:74px;margin:-37px 0 0 -37px;text-align:center;transition:opacity .5s}
 .jeton{width:56px;height:56px;margin:0 auto;border-radius:50%;border:2px solid var(--bord);
-  background:var(--carte);display:flex;align-items:center;justify-content:center;
-  font-size:22px;transition:transform .2s,border-color .2s,filter .6s}
-.siege.cible .jeton{border-color:var(--violet);box-shadow:0 0 0 4px rgba(141,111,224,.2)}
-.siege.moi .jeton{border-color:var(--or)}
-.siege.meute .jeton{border-color:var(--sang)}
+  background:radial-gradient(circle at 40% 32%,#2b2442,#15112a);
+  box-shadow:0 5px 14px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;transition:transform .2s,border-color .2s,box-shadow .3s,filter .6s}
+.siege.cible .jeton{border-color:var(--violet);box-shadow:0 0 0 4px rgba(141,111,224,.22),0 5px 14px rgba(0,0,0,.45)}
+.siege.moi .jeton{border-color:var(--or);box-shadow:0 0 16px rgba(255,217,160,.45),0 5px 14px rgba(0,0,0,.45)}
+.siege.meute .jeton{border-color:var(--sang);box-shadow:0 0 14px rgba(196,86,110,.45),0 5px 14px rgba(0,0,0,.45)}
 .siege.selectionnable{cursor:pointer}
 .siege.selectionnable:hover .jeton{transform:translateY(-4px);border-color:var(--violet-clair)}
 .siege.mort{opacity:.4}
@@ -146,8 +162,9 @@ input::placeholder{color:var(--faible)}
 
 /* ---------- Colonnes ---------- */
 .jeu{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start}
-.chat{background:var(--panneau);border:1px solid var(--bord);border-radius:16px;
-  display:flex;flex-direction:column;height:520px}
+.chat{background:linear-gradient(165deg,#191333,var(--panneau));border:1px solid var(--bord);border-radius:16px;
+  display:flex;flex-direction:column;height:520px;
+  box-shadow:0 12px 40px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.04)}
 .chat-onglets{display:flex;border-bottom:1px solid var(--bord)}
 .onglet{flex:1;background:none;color:var(--faible);padding:13px 8px;font-size:12px;font-weight:900;
   letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid transparent}
@@ -157,7 +174,9 @@ input::placeholder{color:var(--faible)}
 @keyframes apparait{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .msg-nom{font-size:11.5px;font-weight:900;color:var(--violet-clair)}
 .msg-txt{font-size:14px;line-height:1.45}
-.msg.systeme .msg-txt{color:var(--or);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:16px}
+.msg.systeme{border-left:2px solid rgba(255,217,160,.4);padding-left:11px;margin:3px 0}
+.msg.systeme .msg-txt{color:var(--or);font-style:italic;font-family:'Cormorant Garamond',serif;
+  font-size:16.5px;line-height:1.35;text-shadow:0 1px 12px rgba(255,217,160,.18)}
 .chat-saisie{display:flex;gap:8px;padding:12px;border-top:1px solid var(--bord)}
 .chat-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px 0}
 .chat-chips:empty{display:none}
@@ -167,10 +186,15 @@ input::placeholder{color:var(--faible)}
 .chip-retour{color:var(--faible)}
 
 .carte-role{border:1px solid var(--bord);border-radius:16px;padding:22px;margin-bottom:18px;
-  background:linear-gradient(160deg,var(--carte),var(--panneau))}
-.carte-role.loup{border-color:#7a4a5a}
+  background:linear-gradient(160deg,#211a3d,var(--panneau));
+  box-shadow:0 12px 40px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.05)}
+.carte-role.loup{border-color:#7a4a5a;
+  background:linear-gradient(160deg,#2a1a24,#1a1327);
+  box-shadow:0 12px 40px rgba(0,0,0,.4),0 0 30px rgba(196,86,110,.12),inset 0 1px 0 rgba(255,255,255,.05)}
 .nom-role{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:30px;font-weight:700}
-.action{background:var(--panneau);border:1px solid var(--violet);border-radius:16px;padding:20px;margin-bottom:18px}
+.action{background:linear-gradient(165deg,#1d1740,var(--panneau));border:1px solid var(--violet);
+  border-radius:16px;padding:20px;margin-bottom:18px;
+  box-shadow:0 12px 40px rgba(0,0,0,.35),0 0 34px rgba(141,111,224,.14),inset 0 1px 0 rgba(255,255,255,.05)}
 .action h3{font-size:20px;margin-bottom:6px}
 
 .ligne-partie{display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--panneau);
