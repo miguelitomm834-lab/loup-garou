@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loup-Garou en ligne — Jouer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;1,600;1,700&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nuit:#0f0d1a; --panneau:#14102a; --carte:#1c1731; --bord:#241c3f;
+  --texte:#e9e2f2; --doux:#9b8cc0; --faible:#6b5f8a;
+  --violet:#8d6fe0; --violet-clair:#b5a3ef; --or:#ffd9a0; --sang:#c4566e;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--nuit);font-family:'Nunito',sans-serif;color:var(--texte);min-height:100vh}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:700;margin:0}
+button{font-family:inherit;cursor:pointer;border:none}
+button:focus-visible,input:focus-visible{outline:2px solid var(--violet-clair);outline-offset:2px}
+input{font-family:inherit;background:var(--nuit);border:1px solid var(--bord);color:var(--texte);
+  padding:13px 15px;border-radius:10px;font-size:15px;width:100%}
+input::placeholder{color:var(--faible)}
+
+.btn{background:linear-gradient(135deg,#8d6fe0,#6d4fc0);color:#fff;padding:13px 26px;border-radius:10px;
+  font-weight:800;font-size:15px;transition:box-shadow .2s,opacity .2s}
+.btn:hover:not(:disabled){box-shadow:0 8px 30px rgba(141,111,224,.55)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-fantome{background:none;border:1px solid var(--bord);color:var(--doux);padding:12px 22px;
+  border-radius:10px;font-weight:700;font-size:14px;transition:border-color .2s,color .2s}
+.btn-fantome:hover{border-color:var(--violet);color:var(--texte)}
+.btn-danger{background:linear-gradient(135deg,#c4566e,#8a3a4e)}
+
+.ecran{display:none;max-width:1180px;margin:0 auto;padding:40px 24px 80px}
+.ecran.actif{display:block}
+.centre{max-width:440px;margin:0 auto;padding-top:8vh}
+.eyebrow{font-size:11px;letter-spacing:.22em;font-weight:900;color:var(--violet-clair);
+  text-transform:uppercase;margin-bottom:14px}
+.panneau{background:var(--panneau);border:1px solid var(--bord);border-radius:16px;padding:26px}
+.muet{color:var(--faible);font-size:13.5px}
+
+/* ---------- Cercle du village : l'élément signature ---------- */
+.village{position:relative;width:min(560px,88vw);aspect-ratio:1;margin:0 auto}
+.lune{position:absolute;inset:22%;border-radius:50%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:16px;
+  background:radial-gradient(circle at 35% 30%,#3a2f63,#1a1430 70%);
+  box-shadow:0 0 90px rgba(141,111,224,.28);transition:background 1.2s,box-shadow 1.2s}
+.village.jour .lune{background:radial-gradient(circle at 35% 30%,#f6ecd4,#d9c9a4 70%);
+  box-shadow:0 0 110px rgba(255,217,160,.35)}
+.village.jour .phase-nom,.village.jour .chrono{color:#2a2114}
+.phase-nom{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(22px,4.4vw,34px);
+  font-weight:700;line-height:1.1}
+.chrono{font-size:13px;font-weight:900;letter-spacing:.12em;color:var(--doux);margin-top:8px}
+
+.siege{position:absolute;width:74px;margin:-37px 0 0 -37px;text-align:center;transition:opacity .5s}
+.jeton{width:56px;height:56px;margin:0 auto;border-radius:50%;border:2px solid var(--bord);
+  background:var(--carte);display:flex;align-items:center;justify-content:center;
+  font-size:22px;transition:transform .2s,border-color .2s,filter .6s}
+.siege.cible .jeton{border-color:var(--violet);box-shadow:0 0 0 4px rgba(141,111,224,.2)}
+.siege.moi .jeton{border-color:var(--or)}
+.siege.meute .jeton{border-color:var(--sang)}
+.siege.selectionnable{cursor:pointer}
+.siege.selectionnable:hover .jeton{transform:translateY(-4px);border-color:var(--violet-clair)}
+.siege.mort{opacity:.4}
+.siege.mort .jeton{filter:grayscale(1);transform:rotate(-14deg)}
+.nom-siege{font-size:11.5px;font-weight:800;margin-top:6px;color:var(--doux);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.compteur-votes{font-size:11px;font-weight:900;color:var(--or)}
+
+/* ---------- Colonnes ---------- */
+.jeu{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start}
+.chat{background:var(--panneau);border:1px solid var(--bord);border-radius:16px;
+  display:flex;flex-direction:column;height:520px}
+.chat-onglets{display:flex;border-bottom:1px solid var(--bord)}
+.onglet{flex:1;background:none;color:var(--faible);padding:13px 8px;font-size:12px;font-weight:900;
+  letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid transparent}
+.onglet.actif{color:var(--texte);border-bottom-color:var(--violet)}
+.chat-fil{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:11px}
+.msg{animation:apparait .3s ease}
+@keyframes apparait{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg-nom{font-size:11.5px;font-weight:900;color:var(--violet-clair)}
+.msg-txt{font-size:14px;line-height:1.45}
+.msg.systeme .msg-txt{color:var(--or);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:16px}
+.chat-saisie{display:flex;gap:8px;padding:12px;border-top:1px solid var(--bord)}
+
+.carte-role{border:1px solid var(--bord);border-radius:16px;padding:22px;margin-bottom:18px;
+  background:linear-gradient(160deg,var(--carte),var(--panneau))}
+.carte-role.loup{border-color:#7a4a5a}
+.nom-role{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:30px;font-weight:700}
+.action{background:var(--panneau);border:1px solid var(--violet);border-radius:16px;padding:20px;margin-bottom:18px}
+.action h3{font-size:20px;margin-bottom:6px}
+
+.ligne-partie{display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--panneau);
+  border:1px solid var(--bord);border-radius:12px;margin-bottom:10px}
+.ligne-partie:hover{border-color:var(--violet)}
+.code{font-size:22px;font-weight:900;letter-spacing:.14em;color:var(--or);font-variant-numeric:tabular-nums}
+
+.alerte{background:rgba(196,86,110,.14);border:1px solid var(--sang);color:#f0c2cc;
+  padding:13px 16px;border-radius:10px;font-size:14px;font-weight:700;margin-bottom:16px}
+.vide{text-align:center;padding:48px 20px;color:var(--faible)}
+
+@media (max-width:900px){
+  .jeu{grid-template-columns:1fr}
+  .siege{width:60px;margin:-30px 0 0 -30px}
+  .jeton{width:46px;height:46px;font-size:18px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ══════════ CONNEXION ══════════ -->
+<section id="ecranAuth" class="ecran actif">
+  <div class="centre">
+    <div style="text-align:center;margin-bottom:34px">
+      <div class="eyebrow">Loup-Garou en ligne</div>
+      <h1 style="font-size:44px;line-height:1.05">Le village t'attend.</h1>
+      <p class="muet" style="margin-top:12px">Connecte-toi pour rejoindre une partie.</p>
+    </div>
+    <div class="panneau">
+      <div id="authErreur"></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <input id="authPseudo" placeholder="Ton pseudo (à l'inscription)" autocomplete="nickname">
+        <input id="authEmail" type="email" placeholder="Adresse e-mail" autocomplete="email">
+        <input id="authMdp" type="password" placeholder="Mot de passe" autocomplete="current-password">
+        <button class="btn" onclick="seConnecter()">Se connecter</button>
+        <button class="btn-fantome" onclick="sInscrire()">Créer un compte</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ LOBBY ══════════ -->
+<section id="ecranLobby" class="ecran">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;gap:16px;flex-wrap:wrap">
+    <div>
+      <div class="eyebrow">Salle commune</div>
+      <h1 style="font-size:38px">Bonsoir, <span id="monPseudo"></span>.</h1>
+    </div>
+    <button class="btn-fantome" onclick="seDeconnecter()">Se déconnecter</button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start" class="jeu">
+    <div>
+      <h2 style="font-size:24px;margin-bottom:16px">Parties ouvertes</h2>
+      <div id="listeParties"><div class="vide">On regarde qui est réveillé…</div></div>
+    </div>
+    <div>
+      <div class="panneau" style="margin-bottom:18px">
+        <h3 style="font-size:21px;margin-bottom:6px">Ouvrir un village</h3>
+        <p class="muet" style="margin-bottom:16px">6 à 12 joueurs. Tu distribues les rôles quand tout le monde est là.</p>
+        <button class="btn" style="width:100%" onclick="creerPartie()">Créer une partie</button>
+      </div>
+      <div class="panneau">
+        <h3 style="font-size:21px;margin-bottom:6px">Rejoindre par code</h3>
+        <p class="muet" style="margin-bottom:16px">Le code à 6 chiffres donné par l'hôte.</p>
+        <input id="codeSaisi" inputmode="numeric" maxlength="6" placeholder="000000"
+               style="text-align:center;font-size:24px;letter-spacing:.2em;font-weight:900;margin-bottom:12px">
+        <button class="btn" style="width:100%" onclick="rejoindreParCode()">Rejoindre</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SALON D'ATTENTE ══════════ -->
+<section id="ecranSalon" class="ecran">
+  <div style="max-width:640px;margin:0 auto;text-align:center">
+    <div class="eyebrow">Salon d'attente</div>
+    <h1 style="font-size:40px;margin-bottom:10px">Le village se rassemble.</h1>
+    <p class="muet" style="margin-bottom:26px">Partage ce code pour que les autres te rejoignent.</p>
+    <div class="panneau" style="margin-bottom:22px">
+      <div class="code" style="font-size:44px" id="salonCode">------</div>
+      <div class="muet" style="margin-top:6px"><span id="salonNb">0</span> joueur(s) — il en faut 6 minimum</div>
+    </div>
+    <div id="salonJoueurs" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:26px"></div>
+    <div id="salonErreur"></div>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button class="btn-fantome" onclick="quitterPartie()">Quitter</button>
+      <button class="btn" id="btnLancer" onclick="lancerPartie()" style="display:none">Distribuer les rôles</button>
+    </div>
+    <p class="muet" id="salonAttente" style="margin-top:18px">L'hôte lancera la partie.</p>
+  </div>
+</section>
+
+<!-- ══════════ PARTIE ══════════ -->
+<section id="ecranJeu" class="ecran">
+  <div class="jeu">
+    <div>
+      <div id="village" class="village">
+        <div class="lune">
+          <div class="phase-nom" id="phaseNom">…</div>
+          <div class="chrono" id="chrono"></div>
+        </div>
+      </div>
+      <p class="muet" id="consigne" style="text-align:center;margin-top:20px;font-size:15px"></p>
+    </div>
+
+    <div>
+      <div class="carte-role" id="carteRole">
+        <div class="eyebrow" id="roleCamp">Ton rôle</div>
+        <div class="nom-role" id="roleNom">…</div>
+        <p class="muet" id="roleDesc" style="margin:8px 0 0"></p>
+        <div id="roleMeute" style="margin-top:12px"></div>
+      </div>
+
+      <div class="action" id="panneauAction" style="display:none">
+        <h3 id="actionTitre"></h3>
+        <p class="muet" id="actionDesc" style="margin-bottom:14px"></p>
+        <div id="actionBoutons" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+
+      <div class="chat">
+        <div class="chat-onglets" id="chatOnglets"></div>
+        <div class="chat-fil" id="chatFil"></div>
+        <div class="chat-saisie">
+          <input id="chatSaisie" placeholder="Écris pour te défendre…" maxlength="500"
+                 onkeydown="if(event.key==='Enter')envoyerMessage()">
+          <button class="btn" style="padding:12px 18px" onclick="envoyerMessage()">↵</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FIN DE PARTIE ══════════ -->
+<section id="ecranFin" class="ecran">
+  <div style="max-width:680px;margin:0 auto;text-align:center">
+    <div class="eyebrow" id="finEyebrow">Fin de partie</div>
+    <h1 style="font-size:52px;margin-bottom:8px" id="finTitre"></h1>
+    <p class="muet" style="margin-bottom:30px" id="finSous"></p>
+    <div class="panneau" style="text-align:left;margin-bottom:26px">
+      <div class="eyebrow">Les masques tombent</div>
+      <div id="finRoles" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+    <button class="btn" onclick="retourLobby()">Retour à la salle commune</button>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CONFIGURATION — remplace ces 2 valeurs
+   Supabase → Settings → API → Project URL et clé « anon public »
+   ═══════════════════════════════════════════════════════════════ */
+const SUPABASE_URL  = 'https://TON-PROJET.supabase.co';
+const SUPABASE_ANON = 'TA_CLE_ANON_PUBLIC';
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+/* ---------- Données des rôles (affichage uniquement) ---------- */
+const ROLES = {
+  loup_garou : {nom:'Loup-Garou', emoji:'🐺', camp:'Camp des loups',
+    desc:"Chaque nuit, choisis une proie avec ta meute. Le jour, fonds-toi dans la foule."},
+  villageois : {nom:'Villageois', emoji:'🧑‍🌾', camp:'Camp du village',
+    desc:"Aucun pouvoir. Juste ton instinct, ta parole et ton vote."},
+  voyante    : {nom:'Voyante', emoji:'🔮', camp:'Camp du village',
+    desc:"Chaque nuit, sonde l'âme d'un joueur. Parler te sauvera — ou te fera dévorer."},
+  sorciere   : {nom:'Sorcière', emoji:'⚗️', camp:'Camp du village',
+    desc:"Deux potions, une seule fois : l'une ressuscite, l'autre empoisonne."},
+  chasseur   : {nom:'Chasseur', emoji:'🏹', camp:'Camp du village',
+    desc:"Si tu tombes, tu tires. Emporte quelqu'un dans ta tombe."},
+  cupidon    : {nom:'Cupidon', emoji:'🏹', camp:'Camp du village',
+    desc:"La première nuit, lie deux destins. Si l'un meurt, l'autre suit."}
+};
+const AVATARS = {fauve:'🦊',roux:'🦝',duchesse:'🐈',pie:'🐦',chaperon:'🧕'};
+
+/* ---------- État ---------- */
+let moi=null, profil=null, partie=null, joueurs=[], roles=[], votes=[], messages=[];
+let partieId=null, canal=null, canalChat='village', minuteur=null, cibleChoisie=null;
+
+const $ = id => document.getElementById(id);
+const avatarDe = j => AVATARS[j.profils?.avatar] || '🐺';
+const monJoueur = () => joueurs.find(j => j.user_id === moi?.id);
+const monRole   = () => roles.find(r => r.user_id === moi?.id);
+const suisVivant= () => !!monJoueur()?.vivant;
+const suisLoup  = () => monRole()?.camp === 'loups';
+const suisHote  = () => partie?.hote_id === moi?.id;
+
+function montrer(id){
+  document.querySelectorAll('.ecran').forEach(e => e.classList.remove('actif'));
+  $(id).classList.add('actif');
+}
+function erreur(cible, msg){
+  $(cible).innerHTML = msg ? `<div class="alerte">${msg}</div>` : '';
+}
+
+/* ═══════════ AUTHENTIFICATION ═══════════ */
+async function sInscrire(){
+  const pseudo = $('authPseudo').value.trim();
+  if(pseudo.length < 3) return erreur('authErreur', 'Choisis un pseudo de 3 caractères minimum.');
+  const {error} = await sb.auth.signUp({
+    email: $('authEmail').value.trim(),
+    password: $('authMdp').value,
+    options:{data:{pseudo}}
+  });
+  if(error) return erreur('authErreur', error.message);
+  erreur('authErreur', '');
+  alert('Compte créé. Vérifie tes mails si la confirmation est activée, puis connecte-toi.');
+}
+
+async function seConnecter(){
+  const {error} = await sb.auth.signInWithPassword({
+    email: $('authEmail').value.trim(),
+    password: $('authMdp').value
+  });
+  if(error) return erreur('authErreur', 'Identifiants incorrects.');
+  erreur('authErreur', '');
+  await demarrer();
+}
+
+async function seDeconnecter(){
+  await sb.auth.signOut();
+  location.reload();
+}
+
+async function demarrer(){
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session) return montrer('ecranAuth');
+  moi = session.user;
+  const {data} = await sb.from('profils').select('*').eq('id', moi.id).single();
+  profil = data;
+  $('monPseudo').textContent = profil?.pseudo || 'Villageois';
+  await ouvrirLobby();
+}
+
+/* ═══════════ LOBBY ═══════════ */
+async function ouvrirLobby(){
+  montrer('ecranLobby');
+  partieId = null;
+  if(canal){ sb.removeChannel(canal); canal = null; }
+  await chargerParties();
+}
+
+async function chargerParties(){
+  const {data} = await sb.from('parties')
+    .select('id, code, max_joueurs, cree_le, joueurs_partie(count)')
+    .eq('statut','lobby').eq('publique', true).order('cree_le',{ascending:false}).limit(20);
+
+  const liste = $('listeParties');
+  if(!data || !data.length){
+    liste.innerHTML = `<div class="vide">Aucun village ouvert pour l'instant.<br>Ouvre le tien, les loups suivront.</div>`;
+    return;
+  }
+  liste.innerHTML = data.map(p => {
+    const nb = p.joueurs_partie?.[0]?.count ?? 0;
+    return `<div class="ligne-partie">
+      <div class="code">${p.code}</div>
+      <div style="flex:1">
+        <div style="font-weight:800">${nb} / ${p.max_joueurs} joueurs</div>
+        <div class="muet">${nb < 6 ? (6-nb)+' de plus pour commencer' : 'Prêt à démarrer'}</div>
+      </div>
+      <button class="btn" onclick="rejoindre('${p.code}')">Rejoindre</button>
+    </div>`;
+  }).join('');
+}
+
+async function creerPartie(){
+  const {data, error} = await sb.rpc('creer_partie', {p_max:12, p_publique:true});
+  if(error) return alert(error.message);
+  await entrerDansPartie(data.id);
+}
+
+const rejoindreParCode = () => rejoindre($('codeSaisi').value.trim());
+
+async function rejoindre(code){
+  if(!/^\d{6}$/.test(code)) return alert('Le code fait 6 chiffres.');
+  const {data, error} = await sb.rpc('rejoindre_partie', {p_code:code});
+  if(error) return alert(error.message);
+  await entrerDansPartie(data.id);
+}
+
+async function quitterPartie(){
+  await sb.rpc('quitter_partie', {p_partie:partieId});
+  await ouvrirLobby();
+}
+const retourLobby = ouvrirLobby;
+
+/* ═══════════ ABONNEMENT TEMPS RÉEL ═══════════ */
+async function entrerDansPartie(id){
+  partieId = id;
+  if(canal) sb.removeChannel(canal);
+
+  canal = sb.channel('partie:' + id)
+    .on('postgres_changes',{event:'*',schema:'public',table:'parties',filter:`id=eq.${id}`}, rafraichir)
+    .on('postgres_changes',{event:'*',schema:'public',table:'joueurs_partie',filter:`partie_id=eq.${id}`}, rafraichir)
+    .on('postgres_changes',{event:'*',schema:'public',table:'votes',filter:`partie_id=eq.${id}`}, rafraichir)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:`partie_id=eq.${id}`}, chargerMessages)
+    .subscribe();
+
+  await rafraichir();
+}
+
+async function rafraichir(){
+  if(!partieId) return;
+  const [p, j, r, v] = await Promise.all([
+    sb.from('parties').select('*').eq('id', partieId).single(),
+    sb.from('joueurs_partie').select('*, profils(pseudo, avatar)').eq('partie_id', partieId).order('place'),
+    sb.from('roles_joueurs').select('*').eq('partie_id', partieId),
+    sb.from('votes').select('*').eq('partie_id', partieId)
+  ]);
+  partie = p.data; joueurs = j.data || []; roles = r.data || []; votes = v.data || [];
+  if(!partie) return ouvrirLobby();
+
+  if(partie.statut === 'lobby')          rendreSalon();
+  else if(partie.statut === 'terminee')  rendreFin();
+  else                                   { await chargerMessages(); rendreJeu(); }
+}
+
+/* ═══════════ SALON D'ATTENTE ═══════════ */
+function rendreSalon(){
+  montrer('ecranSalon');
+  $('salonCode').textContent = partie.code;
+  $('salonNb').textContent = joueurs.length;
+  $('salonJoueurs').innerHTML = joueurs.map(j => `
+    <div style="text-align:center;width:78px">
+      <div class="jeton">${avatarDe(j)}</div>
+      <div class="nom-siege">${j.profils?.pseudo || '…'}</div>
+    </div>`).join('');
+
+  const pret = suisHote() && joueurs.length >= 6;
+  $('btnLancer').style.display = suisHote() ? 'inline-block' : 'none';
+  $('btnLancer').disabled = !pret;
+  $('salonAttente').textContent = suisHote()
+    ? (pret ? 'Tout le monde est là. À toi de jouer.' : `Encore ${6 - joueurs.length} joueur(s) avant de pouvoir lancer.`)
+    : "L'hôte lancera la partie.";
+}
+
+async function lancerPartie(){
+  const {error} = await sb.rpc('demarrer_partie', {p_partie:partieId});
+  if(error) erreur('salonErreur', error.message);
+}
+
+/* ═══════════ PARTIE ═══════════ */
+const LIBELLES = {
+  nuit    : {nom:'Le village s\'endort', consigne:'Ferme les yeux. Ceux qui ont un pouvoir agissent.'},
+  jour    : {nom:'Le jour se lève',      consigne:'Discutez, accusez, défendez-vous. Le vote arrive.'},
+  vote    : {nom:'L\'heure du vote',     consigne:'Désigne celui que le village doit lyncher.'},
+  chasseur: {nom:'Le chasseur tire',     consigne:'Un chasseur est tombé. Son dernier geste décide.'}
+};
+
+function rendreJeu(){
+  montrer('ecranJeu');
+  const nuitEnCours = partie.statut !== 'jour';
+  $('village').className = 'village' + (partie.statut === 'jour' ? ' jour' : '');
+  $('phaseNom').textContent = LIBELLES[partie.statut]?.nom || '';
+  $('consigne').textContent = LIBELLES[partie.statut]?.consigne || '';
+
+  rendreCercle();
+  rendreCarteRole();
+  rendreAction();
+  rendreOnglets();
+  lancerChrono();
+}
+
+function rendreCercle(){
+  const vil = $('village');
+  vil.querySelectorAll('.siege').forEach(e => e.remove());
+  const n = joueurs.length, cliquable = phaseSelectionnable();
+
+  joueurs.forEach((j, i) => {
+    const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
+    const el = document.createElement('div');
+    el.className = 'siege'
+      + (j.vivant ? '' : ' mort')
+      + (j.user_id === moi.id ? ' moi' : '')
+      + (estDeMaMeute(j) ? ' meute' : '')
+      + (cibleChoisie === j.user_id ? ' cible' : '')
+      + (cliquable && j.vivant && j.user_id !== moi.id ? ' selectionnable' : '');
+    el.style.left = (50 + 42 * Math.cos(angle)) + '%';
+    el.style.top  = (50 + 42 * Math.sin(angle)) + '%';
+
+    const nbVotes = votes.filter(v => v.cycle === partie.cycle && v.cible_id === j.user_id).length;
+    el.innerHTML = `<div class="jeton">${avatarDe(j)}</div>
+      <div class="nom-siege">${j.profils?.pseudo || '…'}</div>
+      ${partie.statut === 'vote' && nbVotes ? `<div class="compteur-votes">${nbVotes} ✋</div>` : ''}`;
+
+    if(cliquable && j.vivant && j.user_id !== moi.id){
+      el.onclick = () => { cibleChoisie = j.user_id; rendreCercle(); rendreAction(); };
+    }
+    vil.appendChild(el);
+  });
+}
+
+const estDeMaMeute = j => suisLoup() && roles.some(r => r.user_id === j.user_id && r.camp === 'loups');
+
+function phaseSelectionnable(){
+  if(!suisVivant()) return false;
+  if(partie.statut === 'vote') return true;
+  if(partie.statut === 'chasseur') return partie.chasseur_en_attente === moi.id;
+  if(partie.statut === 'nuit') return !!pouvoirDeNuit();
+  return false;
+}
+
+function pouvoirDeNuit(){
+  const r = monRole()?.role;
+  if(r === 'loup_garou') return {action:'devorer',   titre:'Choisis ta proie',
+    desc:'La meute doit se mettre d\'accord. La cible majoritaire sera dévorée.'};
+  if(r === 'voyante')    return {action:'sonder',    titre:'Sonde une âme',
+    desc:'Tu découvriras son rôle. À toi de savoir quoi en faire.'};
+  if(r === 'cupidon' && partie.cycle === 1) return {action:'lier', titre:'Lie deux destins',
+    desc:'Choisis deux joueurs. Si l\'un meurt, l\'autre le suit.'};
+  if(r === 'sorciere')   return {action:'potion',    titre:'Tes deux fioles',
+    desc:'Une pour ressusciter, une pour empoisonner. Une seule fois chacune.'};
+  return null;
+}
+
+function rendreCarteRole(){
+  const r = monRole();
+  if(!r) return;
+  const info = ROLES[r.role];
+  $('carteRole').className = 'carte-role' + (r.camp === 'loups' ? ' loup' : '');
+  $('roleCamp').textContent = info.camp;
+  $('roleNom').textContent  = info.emoji + ' ' + info.nom;
+  $('roleDesc').textContent = info.desc;
+
+  const meute = roles.filter(x => x.camp === 'loups' && x.user_id !== moi.id)
+    .map(x => joueurs.find(j => j.user_id === x.user_id)?.profils?.pseudo).filter(Boolean);
+  $('roleMeute').innerHTML = (suisLoup() && meute.length)
+    ? `<div class="eyebrow" style="color:var(--sang)">Ta meute</div>
+       <div style="font-weight:800">${meute.join(' · ')}</div>` : '';
+
+  if(!suisVivant()){
+    $('roleDesc').innerHTML += `<br><span style="color:var(--sang);font-weight:800">
+      Tu es mort. Tu observes en silence.</span>`;
+  }
+}
+
+function rendreAction(){
+  const p = $('panneauAction');
+  if(!phaseSelectionnable()){ p.style.display = 'none'; return; }
+  p.style.display = 'block';
+
+  const cible = joueurs.find(j => j.user_id === cibleChoisie);
+  const nomCible = cible?.profils?.pseudo || 'quelqu\'un';
+  const B = $('actionBoutons');
+  B.innerHTML = '';
+
+  if(partie.statut === 'vote'){
+    $('actionTitre').textContent = 'Ton vote';
+    $('actionDesc').textContent  = 'Clique sur un joueur du cercle, puis confirme. Égalité = personne ne meurt.';
+    B.innerHTML = `<button class="btn" ${cible?'':'disabled'} onclick="confirmerVote()">
+      Voter contre ${nomCible}</button>`;
+    return;
+  }
+
+  if(partie.statut === 'chasseur'){
+    $('actionTitre').textContent = 'Ton dernier coup';
+    $('actionDesc').textContent  = 'Tu tombes, mais tu emportes quelqu\'un. Vise juste.';
+    B.innerHTML = `<button class="btn btn-danger" ${cible?'':'disabled'} onclick="confirmerTir()">
+      Tirer sur ${nomCible}</button>`;
+    return;
+  }
+
+  const pouvoir = pouvoirDeNuit();
+  $('actionTitre').textContent = pouvoir.titre;
+  $('actionDesc').textContent  = pouvoir.desc;
+
+  if(pouvoir.action === 'potion'){
+    const r = monRole();
+    B.innerHTML = `
+      <button class="btn" ${cible && !r.potion_vie_utilisee ?'':'disabled'}
+        onclick="agir('potion_vie')">Sauver ${nomCible}${r.potion_vie_utilisee?' (fiole vide)':''}</button>
+      <button class="btn btn-danger" ${cible && !r.potion_mort_utilisee ?'':'disabled'}
+        onclick="agir('potion_mort')">Empoisonner ${nomCible}${r.potion_mort_utilisee?' (fiole vide)':''}</button>`;
+    return;
+  }
+
+  const verbe = {devorer:'Dévorer', sonder:'Sonder', lier:'Lier'}[pouvoir.action];
+  B.innerHTML = `<button class="btn" ${cible?'':'disabled'} onclick="agir('${pouvoir.action}')">
+    ${verbe} ${nomCible}</button>`;
+}
+
+async function agir(action){
+  const {error} = await sb.rpc('agir_nuit',
+    {p_partie:partieId, p_action:action, p_cible:cibleChoisie, p_cible2:null});
+  if(error) return alert(error.message);
+
+  if(action === 'sonder'){
+    const {data} = await sb.from('roles_joueurs').select('role')
+      .eq('partie_id', partieId).eq('user_id', cibleChoisie).single();
+    const nom = joueurs.find(j => j.user_id === cibleChoisie)?.profils?.pseudo;
+    alert(data ? `${nom} est ${ROLES[data.role].nom}.`
+               : `La vision est trouble. ${nom} te reste opaque.`);
+  }
+  cibleChoisie = null;
+  $('panneauAction').innerHTML = '<p class="muet">Ton choix est enregistré. La nuit suit son cours.</p>';
+}
+
+async function confirmerVote(){
+  const {error} = await sb.rpc('voter', {p_partie:partieId, p_cible:cibleChoisie});
+  if(error) return alert(error.message);
+  cibleChoisie = null;
+}
+
+async function confirmerTir(){
+  const {error} = await sb.rpc('tirer_chasseur', {p_partie:partieId, p_cible:cibleChoisie});
+  if(error) return alert(error.message);
+  cibleChoisie = null;
+}
+
+/* ---------- Chronomètre : l'hôte fait avancer la phase ---------- */
+function lancerChrono(){
+  clearInterval(minuteur);
+  if(!partie.phase_fin_le){ $('chrono').textContent = ''; return; }
+  const fin = new Date(partie.phase_fin_le).getTime();
+
+  minuteur = setInterval(async () => {
+    const reste = Math.max(0, Math.floor((fin - Date.now()) / 1000));
+    $('chrono').textContent = String(Math.floor(reste/60)).padStart(2,'0') + ':' +
+                              String(reste % 60).padStart(2,'0');
+    if(reste === 0){
+      clearInterval(minuteur);
+      if(suisHote()) await sb.rpc('resoudre_phase', {p_partie:partieId});
+    }
+  }, 250);
+}
+
+/* ═══════════ CHAT ═══════════ */
+function rendreOnglets(){
+  const canaux = [['village','Village']];
+  if(suisLoup())    canaux.push(['loups','Meute']);
+  if(!suisVivant()) canaux.push(['morts','Cimetière']);
+  if(!canaux.some(c => c[0] === canalChat)) canalChat = 'village';
+
+  $('chatOnglets').innerHTML = canaux.map(([id, nom]) =>
+    `<button class="onglet ${canalChat===id?'actif':''}" onclick="changerCanal('${id}')">${nom}</button>`).join('');
+
+  const peutParler = suisVivant() ? (partie.statut === 'jour' || partie.statut === 'vote' || canalChat === 'loups')
+                                  : canalChat === 'morts';
+  $('chatSaisie').disabled = !peutParler;
+  $('chatSaisie').placeholder = peutParler ? 'Écris pour te défendre…'
+    : (suisVivant() ? 'Le village dort. Silence.' : 'Les morts ne parlent qu\'entre eux.');
+}
+
+function changerCanal(id){ canalChat = id; rendreOnglets(); chargerMessages(); }
+
+async function chargerMessages(){
+  const {data} = await sb.from('messages')
+    .select('*, profils(pseudo, avatar)').eq('partie_id', partieId)
+    .eq('canal', canalChat).order('cree_le').limit(100);
+  messages = data || [];
+
+  $('chatFil').innerHTML = messages.length ? messages.map(m => `
+    <div class="msg">
+      <div class="msg-nom">${m.profils?.pseudo || '—'}</div>
+      <div class="msg-txt">${echapper(m.contenu)}</div>
+    </div>`).join('')
+    : `<div class="vide" style="padding:20px">Personne n'a encore parlé.</div>`;
+  $('chatFil').scrollTop = $('chatFil').scrollHeight;
+}
+
+async function envoyerMessage(){
+  const txt = $('chatSaisie').value.trim();
+  if(!txt) return;
+  $('chatSaisie').value = '';
+  const {error} = await sb.from('messages')
+    .insert({partie_id:partieId, user_id:moi.id, canal:canalChat, contenu:txt});
+  if(error) alert("Tu ne peux pas parler sur ce canal maintenant.");
+}
+
+const echapper = s => s.replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ═══════════ FIN DE PARTIE ═══════════ */
+function rendreFin(){
+  montrer('ecranFin');
+  clearInterval(minuteur);
+  const titres = {
+    loups   : ['La meute a gagné', 'Le village est tombé. Il ne reste que des crocs.'],
+    village : ['Le village a gagné', 'Les loups sont démasqués. Le hameau peut dormir.'],
+    amoureux: ['Les amoureux ont gagné', 'Deux cœurs contre tous. Le village n\'existe plus.']
+  };
+  const [t, s] = titres[partie.vainqueur] || ['Partie terminée', ''];
+  $('finTitre').textContent = t;
+  $('finSous').textContent  = s;
+
+  $('finRoles').innerHTML = joueurs.map(j => {
+    const r = roles.find(x => x.user_id === j.user_id);
+    const info = r ? ROLES[r.role] : null;
+    return `<div style="display:flex;align-items:center;gap:12px;padding:10px;
+                        border-bottom:1px solid var(--bord);${j.vivant?'':'opacity:.5'}">
+      <div class="jeton" style="width:40px;height:40px;font-size:17px">${avatarDe(j)}</div>
+      <div style="flex:1">
+        <div style="font-weight:800">${j.profils?.pseudo || '—'}</div>
+        <div class="muet">${j.vivant ? 'Survivant' : (j.cause_mort || 'mort') + ' — nuit ' + (j.mort_au_cycle||'?')}</div>
+      </div>
+      <div style="font-weight:900;color:${r?.camp==='loups'?'var(--sang)':'var(--violet-clair)'}">
+        ${info ? info.emoji + ' ' + info.nom : '—'}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════ DÉMARRAGE ═══════════ */
+sb.auth.onAuthStateChange((_e, session) => { if(!session) montrer('ecranAuth'); });
+demarrer();
+</script>
+</body>
+</html>
