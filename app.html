@@ -174,6 +174,19 @@ input::placeholder{color:var(--faible)}
       <div class="muet" style="margin-top:6px"><span id="salonNb">0</span> joueur(s) — il en faut 6 minimum</div>
     </div>
     <div id="salonJoueurs" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:26px"></div>
+
+    <!-- Contrôle bots : visible uniquement par l'hôte -->
+    <div id="salonBots" class="panneau" style="display:none;margin-bottom:22px">
+      <h3 style="font-size:19px;margin-bottom:6px">Compléter avec des bots</h3>
+      <p class="muet" style="margin-bottom:14px">Ajoute des joueurs automatiques pour démarrer plus vite.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px">
+        <button class="btn-fantome" onclick="ajusterBots(-1)" aria-label="Un bot de moins">−</button>
+        <span id="nbBots" style="font-size:26px;font-weight:900;color:var(--or);min-width:36px;text-align:center">1</span>
+        <button class="btn-fantome" onclick="ajusterBots(1)" aria-label="Un bot de plus">+</button>
+      </div>
+      <button class="btn" id="btnAjouterBots" style="width:100%" onclick="remplirAvecBots()">Ajouter <span id="nbBotsLabel">1</span> bot(s)</button>
+    </div>
+
     <div id="salonErreur"></div>
     <div style="display:flex;gap:12px;justify-content:center">
       <button class="btn-fantome" onclick="quitterPartie()">Quitter</button>
@@ -271,6 +284,7 @@ let partieId=null, canal=null, canalChat='village', minuteur=null, cibleChoisie=
 
 const $ = id => document.getElementById(id);
 const avatarDe = j => AVATARS[j.profils?.avatar] || '🐺';
+const estBot = j => !!j.profils?.est_bot;
 const monJoueur = () => joueurs.find(j => j.user_id === moi?.id);
 const monRole   = () => roles.find(r => r.user_id === moi?.id);
 const suisVivant= () => !!monJoueur()?.vivant;
@@ -395,7 +409,7 @@ async function rafraichir(){
   if(!partieId) return;
   const [p, j, r, v] = await Promise.all([
     sb.from('parties').select('*').eq('id', partieId).single(),
-    sb.from('joueurs_partie').select('*, profils(pseudo, avatar)').eq('partie_id', partieId).order('place'),
+    sb.from('joueurs_partie').select('*, profils(pseudo, avatar, est_bot)').eq('partie_id', partieId).order('place'),
     sb.from('roles_joueurs').select('*').eq('partie_id', partieId),
     sb.from('votes').select('*').eq('partie_id', partieId)
   ]);
@@ -415,7 +429,7 @@ function rendreSalon(){
   $('salonJoueurs').innerHTML = joueurs.map(j => `
     <div style="text-align:center;width:78px">
       <div class="jeton">${avatarDe(j)}</div>
-      <div class="nom-siege">${j.profils?.pseudo || '…'}</div>
+      <div class="nom-siege">${j.profils?.pseudo || '…'}${estBot(j) ? ' 🤖' : ''}</div>
     </div>`).join('');
 
   const pret = suisHote() && joueurs.length >= 6;
@@ -424,6 +438,41 @@ function rendreSalon(){
   $('salonAttente').textContent = suisHote()
     ? (pret ? 'Tout le monde est là. À toi de jouer.' : `Encore ${6 - joueurs.length} joueur(s) avant de pouvoir lancer.`)
     : "L'hôte lancera la partie.";
+
+  // Contrôle bots : hôte uniquement
+  $('salonBots').style.display = suisHote() ? 'block' : 'none';
+  if(suisHote()) majBots();
+}
+
+/* ---------- Compléter avec des bots (hôte) ---------- */
+let nbBotsAjouter = 1;
+const placesLibres = () => partie ? Math.max(0, (partie.max_joueurs || 12) - joueurs.length) : 0;
+
+function majBots(){
+  const max = Math.max(1, placesLibres());
+  nbBotsAjouter = Math.min(Math.max(1, nbBotsAjouter), max);
+  $('nbBots').textContent = nbBotsAjouter;
+  $('nbBotsLabel').textContent = nbBotsAjouter;
+  $('btnAjouterBots').disabled = placesLibres() === 0;
+}
+
+function ajusterBots(d){
+  nbBotsAjouter = Math.min(Math.max(1, nbBotsAjouter + d), Math.max(1, placesLibres()));
+  majBots();
+}
+
+async function remplirAvecBots(){
+  erreur('salonErreur', '');
+  const {error} = await sb.rpc('remplir_avec_bots', {p_partie: partieId, p_nb: nbBotsAjouter});
+  if(error){
+    const m = error.message || '';
+    let court = "Impossible d'ajouter des bots.";
+    if(/place|full|complet/i.test(m))            court = 'Plus de place.';
+    else if(/h[ôo]te|host/i.test(m))             court = "Réservé à l'hôte.";
+    else if(/lobby|statut|d[ée]marr|commenc/i.test(m)) court = 'Trop tard, la partie a commencé.';
+    return erreur('salonErreur', court);
+  }
+  await rafraichir(); // en plus du realtime, on force la mise à jour de la liste
 }
 
 async function lancerPartie(){
@@ -472,7 +521,7 @@ function rendreCercle(){
 
     const nbVotes = votes.filter(v => v.cycle === partie.cycle && v.cible_id === j.user_id).length;
     el.innerHTML = `<div class="jeton">${avatarDe(j)}</div>
-      <div class="nom-siege">${j.profils?.pseudo || '…'}</div>
+      <div class="nom-siege">${j.profils?.pseudo || '…'}${estBot(j) ? ' 🤖' : ''}</div>
       ${partie.statut === 'vote' && nbVotes ? `<div class="compteur-votes">${nbVotes} ✋</div>` : ''}`;
 
     if(cliquable && j.vivant && j.user_id !== moi.id){
@@ -682,7 +731,7 @@ function rendreFin(){
                         border-bottom:1px solid var(--bord);${j.vivant?'':'opacity:.5'}">
       <div class="jeton" style="width:40px;height:40px;font-size:17px">${avatarDe(j)}</div>
       <div style="flex:1">
-        <div style="font-weight:800">${j.profils?.pseudo || '—'}</div>
+        <div style="font-weight:800">${j.profils?.pseudo || '—'}${estBot(j) ? ' 🤖' : ''}</div>
         <div class="muet">${j.vivant ? 'Survivant' : (j.cause_mort || 'mort') + ' — nuit ' + (j.mort_au_cycle||'?')}</div>
       </div>
       <div style="font-weight:900;color:${r?.camp==='loups'?'var(--sang)':'var(--violet-clair)'}">
