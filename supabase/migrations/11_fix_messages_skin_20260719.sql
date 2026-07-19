@@ -6,10 +6,12 @@
 --  (ex. "Mati[mojibake]re verrouill[mojibake]e"). La fonction refusait bien,
 --  mais le texte affiche au joueur etait illisible.
 --
---  Ce fichier redefinit choisir_skin a l'IDENTIQUE (meme logique, meme
---  anti-fuite, meme garde-fou GUC) avec des litteraux 100% ASCII : les
---  accents sont ecrits en echappements Unicode Postgres U&'...\00e9...',
---  inalterables par copier-coller. Aucune autre fonction touchee.
+--  Technique : le RAISE de PL/pgSQL n'accepte PAS les litteraux U&'...'
+--  dans sa grammaire (contrairement au SQL normal). On construit donc les
+--  accents avec chr() : chr(233)='e accent aigu', chr(232)='e accent grave'.
+--  Le fichier reste 100% ASCII, inalterable par copier-coller, et produit
+--  les bons accents a l'execution. Redefinition a l'identique (meme logique,
+--  meme anti-fuite, meme garde-fou GUC). Aucune autre fonction touchee.
 -- =====================================================================
 
 create or replace function choisir_skin(
@@ -17,7 +19,7 @@ create or replace function choisir_skin(
 returns void language plpgsql security definer set search_path = public as $$
 declare v_user uuid := auth.uid();
 begin
-  if v_user is null then raise exception U&'Non authentifi\00e9'; end if;
+  if v_user is null then raise exception '%', 'Non authentifi' || chr(233); end if;
 
   -- Anti-fuite : jamais d'atelier en pleine partie (statut hors lobby/terminee)
   if exists (
@@ -26,14 +28,19 @@ begin
      where jp.user_id = v_user
        and p.statut not in ('lobby', 'terminee')
   ) then
-    raise exception U&'Impossible de changer d\0027apparence en pleine partie';
+    raise exception '%', 'Impossible de changer d' || chr(39) || 'apparence en pleine partie';
   end if;
 
-  if not skin_debloque(v_user, 'matiere', p_matiere) then raise exception U&'Mati\00e8re verrouill\00e9e'; end if;
-  if not skin_debloque(v_user, 'gravure', p_gravure) then raise exception U&'Gravure verrouill\00e9e'; end if;
-  if not skin_debloque(v_user, 'aura',    p_aura)    then raise exception U&'Aura verrouill\00e9e';    end if;
-  if not skin_debloque(v_user, 'mort',    p_mort)    then raise exception U&'Effet de mort verrouill\00e9'; end if;
-  if not skin_debloque(v_user, 'teinte',  p_teinte)  then raise exception U&'Teinte verrouill\00e9e';  end if;
+  if not skin_debloque(v_user, 'matiere', p_matiere) then
+    raise exception '%', 'Mati' || chr(232) || 're verrouill' || chr(233) || 'e'; end if;
+  if not skin_debloque(v_user, 'gravure', p_gravure) then
+    raise exception '%', 'Gravure verrouill' || chr(233) || 'e'; end if;
+  if not skin_debloque(v_user, 'aura', p_aura) then
+    raise exception '%', 'Aura verrouill' || chr(233) || 'e'; end if;
+  if not skin_debloque(v_user, 'mort', p_mort) then
+    raise exception '%', 'Effet de mort verrouill' || chr(233); end if;
+  if not skin_debloque(v_user, 'teinte', p_teinte) then
+    raise exception '%', 'Teinte verrouill' || chr(233) || 'e'; end if;
 
   -- Laissez-passer pour le garde-fou trigger (GUC local, reinitialise en fin de tx)
   perform set_config('loup_garou.skin_ok', '1', true);
