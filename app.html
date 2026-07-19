@@ -924,6 +924,62 @@ body.ambiance-jour .decor-lucioles i{opacity:0;animation:none}
 .carte-role.loup{background:rgba(26,13,10,.84)}
 .carte-role:not(.loup){border-color:var(--brume)}
 
+/* ══════════ SKINS — matières, gravures, auras, morts (chantiers 5-6) ══════════ */
+/* Matières : le dégradé de la pierre. 'granit' = défaut (déjà sur .jeton). */
+.jeton.mat-bois{background:radial-gradient(circle at 50% 120%,rgba(199,62,46,.08),transparent 56%),linear-gradient(160deg,#4a3826,#241a12)}
+.jeton.mat-obsidienne{background:radial-gradient(circle at 38% 26%,rgba(224,90,68,.14),transparent 34%),linear-gradient(160deg,#22222b,#050507)}
+.jeton.mat-marbre{background:radial-gradient(circle at 30% 24%,rgba(255,255,255,.5),transparent 40%),linear-gradient(150deg,#d9d5cc 0%,#c3bdb0 55%,#a9a294 100%)}
+.jeton.mat-marbre .grave{color:#3a3830;text-shadow:0 1px 0 rgba(255,255,255,.4)}
+.jeton.mat-os{background:radial-gradient(circle at 34% 26%,rgba(255,255,255,.4),transparent 42%),linear-gradient(155deg,#e6ddc9,#c8bca2)}
+.jeton.mat-os .grave{color:#4a4436;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+/* Gravure (glyphe au centre de la pierre) — la couleur = teinte, posée en inline */
+.grave{font-size:24px;line-height:1;font-family:'Alegreya',serif}
+.carte-vote .grave{font-size:16px}
+/* Auras : halo derrière la pierre, discret le jour, renforcé la nuit */
+.jeton{position:relative}
+.siege .jeton::before{content:'';position:absolute;inset:-6px;border-radius:inherit;z-index:-1;
+  pointer-events:none;opacity:0;transition:opacity .6s}
+.siege.aura-braise .jeton::before{opacity:.5;background:radial-gradient(circle,rgba(199,62,46,.5),transparent 70%);
+  animation:auraPulse 3.5s ease-in-out infinite}
+.siege.aura-lucioles .jeton::before{opacity:.5;background:radial-gradient(circle,rgba(255,182,74,.45),transparent 70%);
+  animation:auraPulse 2.4s ease-in-out infinite}
+.siege.aura-brume .jeton::before{opacity:.45;background:radial-gradient(circle,rgba(154,168,158,.5),transparent 72%);filter:blur(3px)}
+.siege.aura-lune .jeton::before{opacity:.5;background:radial-gradient(circle,rgba(224,216,200,.5),transparent 70%);
+  animation:auraPulse 5s ease-in-out infinite}
+@keyframes auraPulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.6;transform:scale(1.12)}}
+body.ambiance-nuit .siege[class*="aura-"] .jeton::before{opacity:.75}
+body.ambiance-jour .siege[class*="aura-"] .jeton::before{opacity:.28}
+/* Morts à panache : déclenchées via .mort-<type> (skin_mort du joueur) */
+.siege.meurt-poussiere .jeton{animation:mortPoussiere 1.1s ease forwards}
+@keyframes mortPoussiere{0%{opacity:1;filter:none}40%{filter:brightness(1.3) contrast(.8)}
+  100%{opacity:.5;transform:translateY(6px) scale(.9);filter:grayscale(.6) blur(.5px)}}
+.siege.meurt-mousse .jeton{animation:mortMousse 1.2s ease forwards}
+@keyframes mortMousse{0%{filter:none}100%{filter:sepia(.5) hue-rotate(55deg) saturate(1.3) brightness(.7)}}
+.siege.meurt-brume .jeton{animation:mortBrume 1.3s ease forwards}
+@keyframes mortBrume{0%{opacity:1;filter:none}100%{opacity:.5;filter:blur(2.5px) grayscale(.5)}}
+
+/* ══════════ FORGE (atelier des pierres) ══════════ */
+.forge-grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:10px}
+.forge-opt{position:relative;border:1px solid var(--bord);border-radius:12px;padding:12px 6px 8px;
+  text-align:center;cursor:pointer;background:rgba(10,14,11,.5);transition:border-color .15s,transform .1s}
+.forge-opt:hover{border-color:var(--sang)}
+.forge-opt.on{border-color:var(--sang);box-shadow:0 0 0 1px var(--sang),0 0 16px rgba(199,62,46,.3)}
+.forge-opt.verrou{opacity:.5;cursor:not-allowed}
+.forge-opt.verrou:hover{border-color:var(--bord)}
+.forge-opt .fo-nom{font-family:'Jost',sans-serif;font-size:10.5px;letter-spacing:.04em;color:var(--brume);margin-top:6px;display:block}
+.forge-opt .fo-cond{font-family:'Jost',sans-serif;font-size:9.5px;color:var(--faible);display:block;margin-top:2px;line-height:1.25}
+.forge-pierre{width:44px;height:50px;margin:0 auto;border-radius:46% 54% 52% 48% / 55% 48% 52% 45%;
+  border:1px solid var(--bord);display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,var(--pierre1),var(--pierre2))}
+.forge-pierre .grave{font-size:20px}
+.forge-cat{font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--sang-vif);margin:22px 0 10px}
+.forge-cat:first-child{margin-top:0}
+.forge-apercu{position:sticky;top:20px;text-align:center}
+.forge-apercu .ap-pierre{width:92px;height:104px;margin:0 auto 10px;border-radius:46% 54% 52% 48% / 55% 48% 52% 45%;
+  border:1px solid var(--bord);display:flex;align-items:center;justify-content:center;position:relative}
+.forge-apercu .ap-pierre .grave{font-size:42px}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -986,13 +1042,39 @@ body.ambiance-jour .decor-lucioles i{opacity:0;animation:none}
         <p class="muet" style="margin-bottom:16px">6 à 12 joueurs. Tu distribues les rôles quand tout le monde est là.</p>
         <button class="btn" style="width:100%" onclick="creerPartie()">Créer une partie</button>
       </div>
-      <div class="panneau">
+      <div class="panneau" style="margin-bottom:18px">
         <h3 style="font-size:21px;margin-bottom:6px">Rejoindre par code</h3>
         <p class="muet" style="margin-bottom:16px">Le code à 6 chiffres donné par l'hôte.</p>
         <input id="codeSaisi" inputmode="numeric" maxlength="6" placeholder="000000"
                style="text-align:center;font-size:24px;letter-spacing:.2em;font-weight:900;margin-bottom:12px">
         <button class="btn" style="width:100%" onclick="rejoindreParCode()">Rejoindre</button>
       </div>
+      <div class="panneau">
+        <h3 style="font-size:21px;margin-bottom:6px">Ta pierre</h3>
+        <p class="muet" style="margin-bottom:16px">Sculpte ta pierre : matière, gravure, aura. Certaines se méritent.</p>
+        <button class="btn-fantome" style="width:100%" onclick="ouvrirForge()">Ouvrir la forge</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FORGE (atelier des pierres) ══════════ -->
+<section id="ecranForge" class="ecran">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:16px;flex-wrap:wrap">
+    <div>
+      <div class="eyebrow">La forge</div>
+      <h1 style="font-size:34px">Ta pierre</h1>
+    </div>
+    <button class="btn-fantome" onclick="montrer('ecranLobby')">Retour</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 220px;gap:32px;align-items:start" class="jeu">
+    <div id="forgeCategories"></div>
+    <div class="panneau forge-apercu">
+      <div class="eyebrow" style="margin-bottom:12px">Aperçu</div>
+      <div class="ap-pierre" id="forgeApercu"><span class="grave"></span></div>
+      <div class="nom-siege" id="forgeApercuNom" style="margin-bottom:16px"></div>
+      <button class="btn" style="width:100%" id="forgeSauver" onclick="sauverForge()">Graver</button>
+      <div class="muet" id="forgeMsg" style="text-align:center;margin-top:10px;min-height:18px"></div>
     </div>
   </div>
 </section>
@@ -1158,8 +1240,58 @@ const DUREES = {nuit:75, jour:150, vote:45, chasseur:30};
 const ANNEAU_CIRC = 2 * Math.PI * 29;   // r=29 dans le viewBox 0..100
 
 const $ = id => document.getElementById(id);
-/* Gravure par défaut : l'initiale du pseudo (le vrai système de gravures = chantier 5). */
-const avatarDe = j => (j.profils?.pseudo || '?').trim().charAt(0).toUpperCase() || '?';
+/* ---------- Catalogue des skins (chantier 5) ---------- */
+// Glyphes de gravure (monochromes → la teinte s'applique par couleur CSS).
+const GRAVURES = {
+  initiale:null,  // cas spécial : initiale du pseudo
+  rune_s:'ᛋ', rune_b:'ᛒ', rune_m:'ᛗ', rune_n:'ᚾ', rune_l:'ᛚ', rune_r:'ᚱ', rune_t:'ᛏ', rune_e:'ᛖ',
+  croissant_libre:'☾', etoile:'✦', feuille:'❧', montagne:'▲',
+  croissant:'☽', oeil:'◎', patte:'❈', gibet:'†', coeur:'♥'
+};
+const TEINTES = { os:'#c8beab', ambre:'#d9a856', sang_pale:'#b56a5e', brume:'#8fa396' };
+// Catalogue affiché dans la forge : libellé + condition de déblocage.
+const CAT_SKINS = {
+  matiere: {nom:'Matière', opts:[
+    {v:'granit',nom:'Granit',cond:null},
+    {v:'bois',nom:'Bois',cond:'5 fins de partie survécues'},
+    {v:'obsidienne',nom:'Obsidienne',cond:'10 victoires loups'},
+    {v:'marbre',nom:'Marbre',cond:'10 victoires village'},
+    {v:'os',nom:'Os',cond:'3 morts la 1ʳᵉ nuit'} ]},
+  gravure: {nom:'Gravure', opts:[
+    {v:'initiale',nom:'Initiale',cond:null},
+    {v:'rune_s',nom:'ᛋ',cond:null},{v:'rune_b',nom:'ᛒ',cond:null},{v:'rune_m',nom:'ᛗ',cond:null},
+    {v:'rune_n',nom:'ᚾ',cond:null},{v:'rune_l',nom:'ᛚ',cond:null},{v:'rune_r',nom:'ᚱ',cond:null},
+    {v:'rune_t',nom:'ᛏ',cond:null},{v:'rune_e',nom:'ᛖ',cond:null},
+    {v:'croissant_libre',nom:'Croissant',cond:null},{v:'etoile',nom:'Étoile',cond:null},
+    {v:'feuille',nom:'Feuille',cond:null},{v:'montagne',nom:'Montagne',cond:null},
+    {v:'croissant',nom:'Lune pleine',cond:'15 aubes survécues'},
+    {v:'oeil',nom:'Œil',cond:'5 loups démasqués'},
+    {v:'patte',nom:'Patte',cond:'20 villageois dévorés'},
+    {v:'gibet',nom:'Gibet',cond:'1 loup pendu au 1ᵉʳ vote'},
+    {v:'coeur',nom:'Cœur',cond:'1 victoire des amoureux'} ]},
+  aura: {nom:'Aura', opts:[
+    {v:'aucune',nom:'Aucune',cond:null},
+    {v:'braise',nom:'Braise',cond:'25 parties jouées'},
+    {v:'lucioles',nom:'Lucioles',cond:'5 sauvetages sorcière'},
+    {v:'brume',nom:'Brume',cond:'10 accusations survécues'},
+    {v:'lune',nom:'Lune',cond:'50 parties jouées'} ]},
+  mort: {nom:'Mort', opts:[
+    {v:'fissure',nom:'Fissure',cond:null},
+    {v:'poussiere',nom:'Poussière',cond:'10 parties jouées'},
+    {v:'mousse',nom:'Mousse',cond:'10 fins survécues'},
+    {v:'brume_mort',nom:'Brume',cond:'5 accusations survécues'} ]},
+  teinte: {nom:'Teinte', opts:[
+    {v:'os',nom:'Os',cond:null},{v:'ambre',nom:'Ambre',cond:null},
+    {v:'sang_pale',nom:'Sang pâle',cond:null},{v:'brume',nom:'Brume',cond:null} ]}
+};
+// Symbole gravé pour un joueur (initiale par défaut / si skin absent).
+const graveSymbole = j => {
+  const g = j.profils?.skin_gravure;
+  if(g && g !== 'initiale' && GRAVURES[g]) return GRAVURES[g];
+  return (j.profils?.pseudo || '?').trim().charAt(0).toUpperCase() || '?';
+};
+const teinteDe = j => TEINTES[j.profils?.skin_teinte] || TEINTES.os;
+const avatarDe = j => graveSymbole(j);   // compat
 const estBot = j => !!j.profils?.est_bot;
 const monJoueur = () => joueurs.find(j => j.user_id === moi?.id);
 const monRole   = () => roles.find(r => r.user_id === moi?.id);
@@ -1288,7 +1420,7 @@ async function rafraichir(){
   if(!partieId) return;
   const [p, j, r, v, pa] = await Promise.all([
     sb.from('parties').select('*').eq('id', partieId).single(),
-    sb.from('joueurs_partie').select('*, profils(pseudo, avatar, est_bot)').eq('partie_id', partieId).order('place'),
+    sb.from('joueurs_partie').select('*, profils(pseudo, avatar, est_bot, skin_matiere, skin_gravure, skin_aura, skin_mort, skin_teinte)').eq('partie_id', partieId).order('place'),
     sb.from('roles_joueurs').select('*').eq('partie_id', partieId),
     sb.from('votes').select('*').eq('partie_id', partieId),
     sb.from('passages').select('*').eq('partie_id', partieId)
@@ -1430,6 +1562,8 @@ function secousse(){
 /* Secousse à chaque nouvelle mort violente ; ignore les morts déjà connues
    (pas de secousse en rejoignant une partie où des joueurs sont déjà tombés). */
 let mortsConnus = new Set(), mortsInit = false, roleAnime = false;
+let mortsAAnimer = [];   // {uid, type} des morts fraîches à animer au prochain rendu
+const MORT_CLASSE = { poussiere:'meurt-poussiere', mousse:'meurt-mousse', brume_mort:'meurt-brume' };
 function checkMorts(){
   joueurs.forEach(j => {
     if(!j.vivant && !mortsConnus.has(j.user_id)){
@@ -1439,6 +1573,9 @@ function checkMorts(){
         if(/dévor/i.test(c)){ secousse(); Ambiance.cue('grognement'); }
         else if(/chasseur|abattu/i.test(c)){ secousse(); Ambiance.cue('detonation'); }
         else if(/lynch/i.test(c)){ Ambiance.cue('foule'); }
+        // Mort à panache : la fissure est l'état CSS par défaut ; les autres s'animent.
+        const cl = MORT_CLASSE[j.profils?.skin_mort];
+        if(cl) mortsAAnimer.push({uid:j.user_id, cl});
       }
     }
   });
@@ -1484,6 +1621,7 @@ function rendreCercle(){
     const nbVotes = compteVotes(j.user_id);
     const vise = enVote && nbVotes > 0 && nbVotes === maxV;
     const el = document.createElement('div');
+    const aura = (j.vivant && j.profils?.skin_aura && j.profils.skin_aura !== 'aucune') ? ' aura-' + j.profils.skin_aura : '';
     el.className = 'siege'
       + (j.vivant ? '' : ' mort')
       + (j.user_id === moi.id ? ' moi' : '')
@@ -1491,12 +1629,15 @@ function rendreCercle(){
       + (cibleChoisie === j.user_id ? ' cible' : '')
       + (vise ? ' vise' : '')
       + (enVote && maCible === j.user_id ? ' mon-vote' : '')
+      + aura
       + (cliquable && j.vivant && j.user_id !== moi.id ? ' selectionnable' : '');
+    el.dataset.uid = j.user_id;
     el.style.left = (50 + 42 * Math.cos(angle)) + '%';
     el.style.top  = (50 + 42 * Math.sin(angle)) + '%';
 
     const halo = vise ? ` style="box-shadow:0 0 0 ${3 + nbVotes * 2}px rgba(199,62,46,.22)"` : '';
-    el.innerHTML = `<div class="jeton"${halo}>${avatarDe(j)}</div>
+    const mat = ' mat-' + (j.profils?.skin_matiere || 'granit');
+    el.innerHTML = `<div class="jeton${mat}"${halo}><span class="grave" style="color:${teinteDe(j)}">${graveSymbole(j)}</span></div>
       <div class="nom-siege">${j.profils?.pseudo || '…'}${estBot(j) ? ' ⚙' : ''}</div>
       ${enVote && nbVotes ? `<div class="compteur-votes">${nbVotes} ✋</div>` : ''}`;
 
@@ -1507,6 +1648,11 @@ function rendreCercle(){
     }
     vil.appendChild(el);
   });
+  // Déclenche les animations de mort fraîches (poussière / mousse / brume)
+  if(mortsAAnimer.length){
+    mortsAAnimer.forEach(m => vil.querySelector(`.siege[data-uid="${m.uid}"]`)?.classList.add(m.cl));
+    mortsAAnimer = [];
+  }
 }
 
 /* Vote immédiat (public, modifiable tant que la phase dure) */
@@ -1844,6 +1990,97 @@ const echapper = s => s.replace(/[&<>"']/g, c =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 /* ═══════════ FIN DE PARTIE ═══════════ */
+/* ---------- Forge (chantier 5, client) ---------- */
+// Seuils MIROIR de skin_debloque() côté serveur (affichage seul ; le serveur
+// reste seul juge via choisir_skin — REFUS si non débloqué).
+const SEUILS = {
+  'matiere:bois':['survies_fin_de_partie',5], 'matiere:obsidienne':['victoires_loups',10],
+  'matiere:marbre':['victoires_village',10], 'matiere:os':['morts_premiere_nuit',3],
+  'gravure:croissant':['aubes_survecues',15], 'gravure:oeil':['loups_demasques_voyante',5],
+  'gravure:patte':['villageois_devores',20], 'gravure:gibet':['pendaisons_loup_premier_vote',1],
+  'gravure:coeur':['victoires_amoureux',1],
+  'aura:braise':['parties_jouees',25], 'aura:lucioles':['sauvetages_sorciere',5],
+  'aura:brume':['accusations_survecues',10], 'aura:lune':['parties_jouees',50],
+  'mort:poussiere':['parties_jouees',10], 'mort:mousse':['survies_fin_de_partie',10],
+  'mort:brume_mort':['accusations_survecues',5]
+};
+let forgeStats = {}, forgeSel = {};
+const forgeDebloque = (cat, v) => {
+  const s = SEUILS[cat + ':' + v];
+  return !s || (forgeStats[s[0]] || 0) >= s[1];
+};
+
+async function ouvrirForge(){
+  montrer('ecranForge');
+  $('forgeMsg').textContent = '';
+  const [st, pr] = await Promise.all([
+    sb.from('profil_stats').select('*').eq('user_id', moi.id).maybeSingle(),
+    sb.from('profils').select('skin_matiere,skin_gravure,skin_aura,skin_mort,skin_teinte').eq('id', moi.id).single()
+  ]);
+  forgeStats = st.data || {};
+  const p = pr.data || {};
+  forgeSel = {matiere:p.skin_matiere||'granit', gravure:p.skin_gravure||'initiale',
+              aura:p.skin_aura||'aucune', mort:p.skin_mort||'fissure', teinte:p.skin_teinte||'os'};
+  rendreForge();
+}
+
+function forgeGlyphe(cat, v){
+  if(cat === 'gravure') return v === 'initiale' ? (profil?.pseudo||'?').trim().charAt(0).toUpperCase() : (GRAVURES[v]||'?');
+  if(cat === 'teinte') return '●';
+  return '◆';
+}
+
+function rendreForge(){
+  const wrap = $('forgeCategories'); wrap.innerHTML = '';
+  for(const [cat, def] of Object.entries(CAT_SKINS)){
+    const bloc = document.createElement('div');
+    let html = `<div class="forge-cat">${def.nom}</div><div class="forge-grille">`;
+    for(const o of def.opts){
+      const ok = forgeDebloque(cat, o.v);
+      const choisi = forgeSel[cat] === o.v;
+      const couleur = cat === 'teinte' ? TEINTES[o.v] : 'var(--os)';
+      const apercuMat = cat === 'matiere' ? ' mat-' + o.v : '';
+      html += `<div class="forge-opt${choisi?' on':''}${ok?'':' verrou'}" data-cat="${cat}" data-v="${o.v}">
+        <div class="forge-pierre${apercuMat}"><span class="grave" style="color:${couleur}">${forgeGlyphe(cat,o.v)}</span></div>
+        <span class="fo-nom">${ok?'':'🔒 '}${o.nom}</span>
+        ${(!ok && o.cond)?`<span class="fo-cond">${o.cond}</span>`:''}
+      </div>`;
+    }
+    bloc.innerHTML = html + '</div>';
+    wrap.appendChild(bloc);
+  }
+  wrap.querySelectorAll('.forge-opt').forEach(el => {
+    el.onclick = () => {
+      const {cat, v} = el.dataset;
+      if(!forgeDebloque(cat, v)){ $('forgeMsg').textContent = 'Pas encore débloqué.'; return; }
+      forgeSel[cat] = v; $('forgeMsg').textContent = ''; rendreForge();
+    };
+  });
+  majApercuForge();
+}
+
+function majApercuForge(){
+  const ap = $('forgeApercu');
+  ap.className = 'ap-pierre mat-' + forgeSel.matiere;
+  const g = forgeSel.gravure === 'initiale'
+    ? (profil?.pseudo||'?').trim().charAt(0).toUpperCase() : (GRAVURES[forgeSel.gravure]||'?');
+  ap.querySelector('.grave').textContent = g;
+  ap.querySelector('.grave').style.color = TEINTES[forgeSel.teinte] || TEINTES.os;
+  // aura sur l'aperçu
+  ap.parentElement.querySelectorAll('.ap-aura').forEach(e=>e.remove());
+  $('forgeApercuNom').textContent = CAT_SKINS.aura.opts.find(o=>o.v===forgeSel.aura)?.nom !== 'Aucune'
+    ? 'Aura : ' + CAT_SKINS.aura.opts.find(o=>o.v===forgeSel.aura).nom : '';
+}
+
+async function sauverForge(){
+  $('forgeMsg').textContent = 'Gravure en cours…';
+  const {error} = await sb.rpc('choisir_skin', {
+    p_matiere:forgeSel.matiere, p_gravure:forgeSel.gravure, p_aura:forgeSel.aura,
+    p_mort:forgeSel.mort, p_teinte:forgeSel.teinte
+  });
+  $('forgeMsg').textContent = error ? ('Refusé : ' + error.message) : 'Pierre gravée ✔';
+}
+
 function rendreFin(){
   montrer('ecranFin');
   clearInterval(minuteur);
