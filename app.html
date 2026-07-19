@@ -2286,6 +2286,8 @@ const LORE_DEFAUT = 'Chaque partie jouée est un coup de burin.';
 
 let forgeStats = {}, forgeSel = {}, forgeCat = 'matiere';
 let essaiTimer = null, enCeremonie = false, queteCible = null;
+let statsSkins = null;   // rareté réelle, mise en cache pour la session (chantier FORGE-C)
+const SEUIL_RARETE = 50; // en dessous, aucun pourcentage (un ratio à 3 joueurs mentirait)
 
 const forgeDebloque = (cat, v) => {
   const s = SEUILS[cat + ':' + v];
@@ -2310,6 +2312,25 @@ async function ouvrirForge(){
   rendreOngletsForge(); rendrePanneau(); rendrePierreForge();
   rendreCollection(); rendreQuete();
   $('fLore').textContent = LORE_DEFAUT; $('fLore').classList.remove('vive');
+  chargerRarete();   // rareté réelle en tâche de fond (une seule fois / session)
+}
+
+// Pourcentages RÉELS : une seule requête, cachée pour la session.
+async function chargerRarete(){
+  if(statsSkins !== null) { rendreParts(); return; }
+  const {data, error} = await sb.rpc('stats_skins');
+  statsSkins = error ? {total:0, parts:{}} : (data || {total:0, parts:{}});
+  rendreParts();
+}
+// Remplit les lignes « portée par X % » — seulement si l'échantillon est fiable.
+function rendreParts(){
+  if(!statsSkins || (statsSkins.total || 0) < SEUIL_RARETE) return;   // sinon : aucune ligne
+  document.querySelectorAll('#fGrille .part').forEach(el => {
+    const n = statsSkins.parts?.[el.dataset.part] || 0;
+    const pct = Math.round(100 * n / statsSkins.total);
+    el.textContent = pct >= 1 ? `portée par ${pct} % des tailleurs`
+                              : 'portée par moins de 1 %';
+  });
 }
 
 function rendrePierreForge(sel){
@@ -2373,6 +2394,7 @@ function rendrePanneau(){
       rendreQuete();
     };
   });
+  rendreParts();   // (re)remplit les « portée par X % » si l'échantillon est fiable
 }
 
 function montrerLore(txt){
