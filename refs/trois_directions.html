@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loup-Garou — Trois directions artistiques</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Eczar:wght@400;600;700&family=Alegreya:ital,wght@0,400;0,500;1,400&family=Limelight&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============ SOCLE ============ */
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{overflow:hidden;background:#000}
+.dir{position:absolute;inset:0;display:none;overflow:hidden}
+.dir.active{display:block}
+.tag{position:absolute;top:22px;left:26px;z-index:40;line-height:1.5;pointer-events:none}
+.tag .num{font-size:11px;letter-spacing:.4em;text-transform:uppercase;opacity:.65}
+.tag .nom{font-size:21px}
+.tag .pitch{font-size:12.5px;opacity:.7;max-width:300px}
+
+/* switcher */
+#switch{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:6px;padding:7px;border-radius:999px;background:rgba(8,8,11,.72);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.09)}
+#switch button{font-family:'Jost',sans-serif;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:#cfc9d8;background:none;border:1px solid transparent;border-radius:999px;padding:8px 18px;cursor:pointer;transition:.25s}
+#switch button:hover{color:#fff}
+#switch button.on{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.18);color:#fff}
+#switch button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+/* ======================================================
+   I — LE GRIMOIRE
+   ====================================================== */
+.grimoire{background:
+  radial-gradient(120% 90% at 50% 0%, #241a10 0%, #16100a 55%, #0d0906 100%)}
+.grimoire::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(90% 80% at 50% 45%, transparent 55%, rgba(0,0,0,.55) 100%);
+  animation:bougie 7s ease-in-out infinite}
+@keyframes bougie{0%,100%{opacity:.85}50%{opacity:1}}
+.grimoire .tag{color:#cdb98a;font-family:'EB Garamond',serif}
+.grimoire .tag .nom{font-family:'IM Fell English',serif}
+
+.page{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(1060px,94vw);height:min(640px,88vh);
+  background:linear-gradient(160deg,#ecdfc2 0%,#e3d3b0 48%,#d9c79f 100%);
+  box-shadow:0 30px 80px rgba(0,0,0,.7), inset 0 0 90px rgba(120,90,40,.28);
+  padding:26px;color:#241c10}
+.page .cadre{position:absolute;inset:14px;border:1.5px solid #43331d;outline:1px solid #43331d;outline-offset:4px;pointer-events:none}
+.page .fleuron{position:absolute;font-size:17px;color:#8f2f2b;line-height:1}
+.page .fleuron.a{top:6px;left:8px}.page .fleuron.b{top:6px;right:8px}
+.page .fleuron.c{bottom:6px;left:8px}.page .fleuron.d{bottom:6px;right:8px}
+
+.g-scene{position:absolute;top:0;left:0;bottom:0;width:62%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.g-lune{width:190px;height:190px;position:relative}
+.g-lune svg{width:100%;height:100%}
+.g-titre{font-family:'IM Fell English',serif;font-size:36px;margin-top:14px;font-style:italic}
+.g-timer{font-family:'EB Garamond',serif;font-size:15px;letter-spacing:.32em;margin-top:2px;color:#5d4526}
+.g-anneau{position:absolute;inset:-9px;border-radius:50%;border:1.5px solid transparent;border-top-color:#8f2f2b;border-right-color:#8f2f2b;transform:rotate(40deg)}
+
+.g-jetons{position:absolute;inset:0}
+.g-jeton{position:absolute;width:64px;text-align:center;transform:translate(-50%,-50%)}
+.g-jeton .rond{width:54px;height:54px;margin:0 auto;border-radius:50%;
+  border:1.6px solid #2b2113;outline:1px solid #2b2113;outline-offset:3px;
+  background:radial-gradient(circle at 35% 30%, #f2e7cc, #dbc9a2);
+  font-family:'IM Fell English',serif;font-size:23px;display:flex;align-items:center;justify-content:center;color:#241c10}
+.g-jeton .nomj{font-family:'EB Garamond',serif;font-size:12.5px;margin-top:5px;letter-spacing:.05em}
+.g-jeton.moi .rond{box-shadow:0 0 0 3px rgba(143,47,43,.35)}
+.g-jeton.mort{opacity:.55}
+.g-jeton.mort .rond{transform:rotate(10deg);position:relative}
+.g-jeton.mort .rond::after{content:"✕";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:33px;color:#8f2f2b;opacity:.85}
+
+.g-side{position:absolute;top:0;right:0;bottom:0;width:38%;border-left:1.5px solid #43331d;padding:26px 24px;display:flex;flex-direction:column;gap:14px}
+.g-role{border:1.5px solid #43331d;padding:13px 15px}
+.g-role .eti{font-family:'EB Garamond',serif;font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;color:#8f2f2b}
+.g-role .rnom{font-family:'IM Fell English',serif;font-size:25px;font-style:italic;margin:2px 0}
+.g-role p{font-family:'EB Garamond',serif;font-size:13.5px;line-height:1.45}
+.g-narr{font-family:'EB Garamond',serif;font-size:15px;line-height:1.5;font-style:italic;padding:10px 0;border-top:1px solid #43331d;border-bottom:1px solid #43331d}
+.g-narr::first-letter{font-family:'IM Fell English',serif;font-size:34px;float:left;line-height:.85;padding-right:6px;color:#8f2f2b;font-style:normal}
+.g-puces{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto}
+.g-puces span{font-family:'EB Garamond',serif;font-size:12.5px;border:1px solid #43331d;padding:4px 11px;cursor:pointer}
+.g-puces span:hover{background:#241c10;color:#ecdfc2}
+.g-btn{font-family:'IM Fell English',serif;font-size:16px;background:#241c10;color:#ecdfc2;border:none;padding:11px;cursor:pointer;letter-spacing:.06em}
+.g-btn:hover{background:#3a2c18}
+.g-sous{font-family:'EB Garamond',serif;font-size:12px;text-align:center;color:#5d4526;font-style:italic}
+
+/* ======================================================
+   II — LA LUNE DE SANG
+   ====================================================== */
+.sang{background:linear-gradient(#0c130e 0%, #070b08 60%, #050705 100%);font-family:'Alegreya',serif}
+.sang .tag{color:#ded8c8}
+.sang .tag .nom{font-family:'Eczar',serif;color:#d9614c}
+.s-etoiles{position:absolute;inset:0;pointer-events:none}
+.s-etoiles i{position:absolute;width:2px;height:2px;border-radius:50%;background:#ded8c8;opacity:.5}
+.s-lune{position:absolute;top:8%;left:50%;transform:translateX(-50%);width:min(340px,38vmin);height:min(340px,38vmin);border-radius:50%;
+  background:radial-gradient(circle at 38% 32%, #e86a50 0%, #c73e2e 45%, #7c1f15 100%);
+  box-shadow:0 0 120px 30px rgba(199,62,46,.35), 0 0 300px 90px rgba(199,62,46,.15);
+  animation:pouls 9s ease-in-out infinite}
+@keyframes pouls{0%,100%{box-shadow:0 0 120px 30px rgba(199,62,46,.35),0 0 300px 90px rgba(199,62,46,.15)}50%{box-shadow:0 0 140px 40px rgba(199,62,46,.45),0 0 340px 110px rgba(199,62,46,.2)}}
+.s-lune .tache{position:absolute;border-radius:50%;background:rgba(90,20,12,.4)}
+.s-phase{position:absolute;top:11%;left:50%;transform:translateX(-50%);text-align:center;z-index:5;width:min(340px,38vmin);height:min(340px,38vmin);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.s-phase h2{font-family:'Eczar',serif;font-weight:600;font-size:34px;color:#f4efe2;text-shadow:0 2px 24px rgba(0,0,0,.8)}
+.s-phase .t{font-size:16px;letter-spacing:.4em;color:#f4efe2;opacity:.85;margin-top:4px}
+
+.s-sapins{position:absolute;bottom:0;left:0;right:0;height:34vh;pointer-events:none}
+.s-sapins svg{position:absolute;bottom:0;width:100%;height:100%}
+.s-yeux{position:absolute;bottom:calc(34vh - 60px);left:0;right:0;height:40px;pointer-events:none}
+.s-yeux b{position:absolute;width:26px;height:8px}
+.s-yeux b::before,.s-yeux b::after{content:"";position:absolute;top:0;width:7px;height:7px;border-radius:50%;background:#ffb64a;box-shadow:0 0 8px #ffb64a}
+.s-yeux b::before{left:0}.s-yeux b::after{right:0}
+.s-yeux b{opacity:0;animation:cligne 11s infinite}
+.s-yeux b:nth-child(2){animation-delay:4s}
+.s-yeux b:nth-child(3){animation-delay:7.5s}
+@keyframes cligne{0%,72%,100%{opacity:0}76%,92%{opacity:1}}
+
+.s-brume{position:absolute;bottom:0;left:-20%;width:140%;height:26vh;pointer-events:none}
+.s-brume i{position:absolute;bottom:0;width:52%;height:100%;border-radius:50%;background:#9aa89e;filter:blur(48px);opacity:.11}
+.s-brume i:nth-child(1){left:0;animation:derive 90s linear infinite}
+.s-brume i:nth-child(2){left:38%;height:80%;animation:derive 130s linear infinite reverse}
+@keyframes derive{0%{transform:translateX(-8%)}50%{transform:translateX(9%)}100%{transform:translateX(-8%)}}
+
+.s-jetons{position:absolute;inset:0}
+.s-jeton{position:absolute;width:78px;text-align:center;transform:translate(-50%,-50%);z-index:6}
+.s-pierre{width:58px;height:66px;margin:0 auto;position:relative;
+  border-radius:46% 54% 52% 48% / 55% 48% 52% 45%;
+  background:linear-gradient(160deg,#232e26,#141b16);
+  border:1px solid #38443b;box-shadow:inset 0 6px 14px rgba(255,255,255,.05), 0 8px 18px rgba(0,0,0,.55);
+  display:flex;align-items:center;justify-content:center}
+.s-pierre span{font-size:24px;color:#c8beab;text-shadow:0 1px 0 rgba(0,0,0,.9)}
+.s-jeton .nomj{font-size:13px;color:#ded8c8;margin-top:6px;letter-spacing:.04em}
+.s-jeton.moi .s-pierre{box-shadow:inset 0 6px 14px rgba(255,255,255,.05),0 8px 18px rgba(0,0,0,.55),0 0 0 2px rgba(199,62,46,.6),0 0 22px rgba(199,62,46,.35)}
+.s-jeton.mort{opacity:.5}
+.s-jeton.mort .s-pierre{transform:rotate(14deg)}
+.s-jeton.mort .s-pierre::after{content:"";position:absolute;top:12%;left:50%;width:1.5px;height:70%;background:#0a0d0b;transform:rotate(24deg)}
+
+.s-side{position:absolute;top:70px;right:26px;width:330px;z-index:8;display:flex;flex-direction:column;gap:12px}
+.s-role{background:rgba(10,14,11,.82);backdrop-filter:blur(8px);border:1px solid rgba(199,62,46,.5);border-radius:4px;padding:14px 16px;color:#ded8c8}
+.s-role .eti{font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;color:#d9614c;font-family:'Jost',sans-serif}
+.s-role .rnom{font-family:'Eczar',serif;font-size:26px;font-weight:600;color:#f4efe2}
+.s-role p{font-size:14px;line-height:1.45;opacity:.85}
+.s-narr{background:rgba(10,14,11,.82);border-left:3px solid #c73e2e;border-radius:0 4px 4px 0;padding:12px 15px;color:#ded8c8;font-style:italic;font-size:14.5px;line-height:1.5}
+.s-puces{display:flex;flex-wrap:wrap;gap:7px}
+.s-puces span{font-family:'Jost',sans-serif;font-size:12px;letter-spacing:.05em;color:#ded8c8;border:1px solid #38443b;border-radius:999px;padding:5px 12px;cursor:pointer;background:rgba(10,14,11,.6)}
+.s-puces span:hover{border-color:#c73e2e;color:#fff}
+.s-btn{font-family:'Eczar',serif;font-size:16px;background:#c73e2e;color:#10100c;border:none;border-radius:4px;padding:11px;cursor:pointer;font-weight:600}
+.s-btn:hover{background:#e05a44}
+.s-sous{font-family:'Jost',sans-serif;font-size:11.5px;text-align:center;color:#9aa89e;letter-spacing:.05em}
+
+/* ======================================================
+   III — LE CABARET NOCTURNE
+   ====================================================== */
+.cabaret{background:#0d0b10;font-family:'Jost',sans-serif}
+.cabaret::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:120vmin;height:120vmin;border-radius:50%;
+  background:conic-gradient(from 0deg, rgba(212,175,106,.07) 0deg 6deg, transparent 6deg 24deg,
+    rgba(212,175,106,.07) 24deg 30deg, transparent 30deg 48deg,
+    rgba(212,175,106,.07) 48deg 54deg, transparent 54deg 72deg,
+    rgba(212,175,106,.07) 72deg 78deg, transparent 78deg 96deg,
+    rgba(212,175,106,.07) 96deg 102deg, transparent 102deg 120deg,
+    rgba(212,175,106,.07) 120deg 126deg, transparent 126deg 144deg,
+    rgba(212,175,106,.07) 144deg 150deg, transparent 150deg 168deg,
+    rgba(212,175,106,.07) 168deg 174deg, transparent 174deg 192deg,
+    rgba(212,175,106,.07) 192deg 198deg, transparent 198deg 216deg,
+    rgba(212,175,106,.07) 216deg 222deg, transparent 222deg 240deg,
+    rgba(212,175,106,.07) 240deg 246deg, transparent 246deg 264deg,
+    rgba(212,175,106,.07) 264deg 270deg, transparent 270deg 288deg,
+    rgba(212,175,106,.07) 288deg 294deg, transparent 294deg 312deg,
+    rgba(212,175,106,.07) 312deg 318deg, transparent 318deg 336deg,
+    rgba(212,175,106,.07) 336deg 342deg, transparent 342deg 360deg)}
+.cabaret .tag{color:#f2ead8}
+.cabaret .tag .nom{font-family:'Limelight',cursive;color:#d4af6a}
+
+.rideau{position:absolute;top:0;bottom:0;width:11%;z-index:12;
+  background:repeating-linear-gradient(90deg,#571825 0 14px,#7a2434 14px 30px,#4a1420 30px 44px);
+  box-shadow:inset -18px 0 30px rgba(0,0,0,.6)}
+.rideau.d{right:0;transform:scaleX(-1)}
+.rideau.g{left:0}
+.rideau::after{content:"";position:absolute;top:34%;left:8%;right:8%;height:34px;border:2px solid #d4af6a;border-radius:50%;opacity:.75}
+
+.fronton{position:absolute;top:0;left:11%;right:11%;height:56px;z-index:11;display:flex;align-items:center;justify-content:center;
+  border-bottom:1.5px solid #d4af6a}
+.fronton svg{height:22px;opacity:.9}
+
+.c-scene{position:absolute;top:56px;left:11%;right:11%;bottom:0}
+.c-proj{position:absolute;top:26px;left:50%;transform:translateX(-50%);width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%, #fffdf4, #f2ead8 55%, #d8cdb2 100%);
+  box-shadow:0 0 60px 16px rgba(242,234,216,.35);z-index:3}
+.c-faisceau{position:absolute;top:80px;left:50%;width:560px;height:64vh;transform-origin:top center;transform:translateX(-50%);
+  background:linear-gradient(rgba(242,234,216,.16), rgba(242,234,216,0) 82%);
+  clip-path:polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+  animation:balaie 13s ease-in-out infinite;pointer-events:none}
+@keyframes balaie{0%,100%{transform:translateX(-50%) rotate(-2.4deg)}50%{transform:translateX(-50%) rotate(2.4deg)}}
+.c-phase{position:absolute;top:170px;left:0;right:0;text-align:center;z-index:4}
+.c-phase h2{font-family:'Limelight',cursive;font-size:33px;letter-spacing:.3em;color:#f2ead8;text-transform:uppercase}
+.c-phase .orn{color:#d4af6a;font-size:13px;letter-spacing:.5em;margin-top:6px}
+.c-phase .t{font-size:15px;letter-spacing:.42em;color:#d4af6a;margin-top:4px}
+
+.c-jetons{position:absolute;inset:0}
+.c-jeton{position:absolute;width:80px;text-align:center;transform:translate(-50%,-50%);z-index:5}
+.c-med{width:60px;height:60px;margin:0 auto;border-radius:50%;position:relative;
+  background:radial-gradient(circle at 38% 32%, #201b28, #100d16);
+  border:1.6px solid #d4af6a;box-shadow:0 0 0 4px #0d0b10, 0 0 0 5.5px rgba(212,175,106,.55), 0 6px 18px rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center}
+.c-med span{font-family:'Limelight',cursive;font-size:24px;color:#d4af6a}
+.c-jeton .nomj{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:#f2ead8;margin-top:8px;font-weight:300}
+.c-jeton.moi .c-med{box-shadow:0 0 0 4px #0d0b10,0 0 0 5.5px rgba(212,175,106,.55),0 0 24px rgba(212,175,106,.5)}
+.c-jeton.mort{opacity:.45}
+.c-jeton.mort .c-med{border-color:#5a5361;filter:grayscale(1)}
+.c-jeton.mort .c-med::after{content:"";position:absolute;inset:-3px;background:linear-gradient(135deg,transparent 44%,#0d0b10 44% 56%,transparent 56%)}
+
+.c-side{position:absolute;top:80px;right:calc(11% + 22px);width:322px;z-index:14;display:flex;flex-direction:column;gap:12px}
+.c-role{background:#f2ead8;border-radius:3px;padding:15px 17px;color:#171320;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.c-role .eti{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:#8a6a2f}
+.c-role .rnom{font-family:'Limelight',cursive;font-size:24px;margin:3px 0 4px;color:#171320}
+.c-role p{font-size:13.5px;line-height:1.5;font-weight:300}
+.c-narr{border:1px solid #d4af6a;border-radius:3px;padding:12px 15px;color:#f2ead8;font-size:14px;line-height:1.55;font-weight:300;background:rgba(13,11,16,.8)}
+.c-narr b{color:#d4af6a;font-weight:500}
+.c-puces{display:flex;flex-wrap:wrap;gap:7px}
+.c-puces span{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:#d4af6a;border:1px solid rgba(212,175,106,.55);border-radius:2px;padding:6px 11px;cursor:pointer}
+.c-puces span:hover{background:#d4af6a;color:#0d0b10}
+.c-btn{font-family:'Jost',sans-serif;font-size:13.5px;letter-spacing:.28em;text-transform:uppercase;background:none;color:#d4af6a;border:1.5px solid #d4af6a;border-radius:2px;padding:12px;cursor:pointer;transition:.25s}
+.c-btn:hover{background:#d4af6a;color:#0d0b10}
+.c-sous{font-size:11px;text-align:center;color:#9d94a8;letter-spacing:.1em}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+@media (max-width:900px){
+  .g-side,.s-side,.c-side{display:none}
+  .rideau{width:6%}
+  .c-scene{left:6%;right:6%}
+  .fronton{left:6%;right:6%}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ I. LE GRIMOIRE ============ -->
+<section class="dir grimoire active" id="d1">
+  <div class="tag">
+    <div class="num">Proposition I</div>
+    <div class="nom">Le Grimoire</div>
+    <div class="pitch">La partie se joue dans les pages d'un vieux livre de contes. Encre, parchemin, gravures.</div>
+  </div>
+  <div class="page">
+    <div class="cadre"></div>
+    <span class="fleuron a">❦</span><span class="fleuron b">❦</span>
+    <span class="fleuron c">❦</span><span class="fleuron d">❦</span>
+
+    <div class="g-scene">
+      <div class="g-lune">
+        <div class="g-anneau"></div>
+        <svg viewBox="0 0 100 100">
+          <defs>
+            <pattern id="hachures" width="4" height="4" patternTransform="rotate(38)" patternUnits="userSpaceOnUse">
+              <line x1="0" y1="0" x2="0" y2="4" stroke="#241c10" stroke-width="0.85"/>
+            </pattern>
+            <clipPath id="rond"><circle cx="50" cy="50" r="44"/></clipPath>
+          </defs>
+          <circle cx="50" cy="50" r="44" fill="#e9dcbc"/>
+          <g clip-path="url(#rond)" opacity="0.5">
+            <rect x="0" y="58" width="100" height="42" fill="url(#hachures)"/>
+            <rect x="52" y="30" width="48" height="30" fill="url(#hachures)" opacity="0.6"/>
+          </g>
+          <circle cx="50" cy="50" r="44" fill="none" stroke="#241c10" stroke-width="2.4"/>
+          <circle cx="38" cy="34" r="6.5" fill="none" stroke="#241c10" stroke-width="1.4"/>
+          <circle cx="60" cy="55" r="4" fill="none" stroke="#241c10" stroke-width="1.2"/>
+          <circle cx="43" cy="66" r="2.8" fill="none" stroke="#241c10" stroke-width="1.1"/>
+        </svg>
+      </div>
+      <div class="g-titre">Le jour se lève</div>
+      <div class="g-timer">01 : 32</div>
+
+      <div class="g-jetons">
+        <div class="g-jeton moi" style="top:16%;left:50%"><div class="rond">S</div><div class="nomj">Salva</div></div>
+        <div class="g-jeton" style="top:34%;left:82%"><div class="rond">B</div><div class="nomj">Bot 02 ⚙</div></div>
+        <div class="g-jeton mort" style="top:70%;left:82%"><div class="rond">N</div><div class="nomj">Nox</div></div>
+        <div class="g-jeton" style="top:87%;left:50%"><div class="rond">M</div><div class="nomj">Mira</div></div>
+        <div class="g-jeton mort" style="top:70%;left:18%"><div class="rond">L</div><div class="nomj">Léa</div></div>
+        <div class="g-jeton" style="top:34%;left:18%"><div class="rond">B</div><div class="nomj">Bot 08 ⚙</div></div>
+      </div>
+    </div>
+
+    <div class="g-side">
+      <div class="g-role">
+        <div class="eti">Camp des loups</div>
+        <div class="rnom">Loup-Garou</div>
+        <p>Chaque nuit, choisis une proie avec ta meute. Le jour, fonds-toi dans la foule.</p>
+      </div>
+      <div class="g-narr">On a retrouvé Léa à l'aube, la gorge ouverte. Elle était Villageoise.</div>
+      <div class="g-puces">
+        <span>Je vote…</span><span>…est suspect</span><span>Je défends…</span><span>Passons au vote</span>
+      </div>
+      <button class="g-btn">Passer au vote</button>
+      <div class="g-sous">Une voix réclame le vote.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ II. LA LUNE DE SANG ============ -->
+<section class="dir sang" id="d2">
+  <div class="tag">
+    <div class="num">Proposition II</div>
+    <div class="nom">La Lune de Sang</div>
+    <div class="pitch">Horreur folklorique. Une lune rouge, des sapins noirs, des yeux dans la brume.</div>
+  </div>
+
+  <div class="s-etoiles">
+    <i style="top:12%;left:8%"></i><i style="top:7%;left:22%"></i><i style="top:18%;left:15%"></i>
+    <i style="top:9%;left:73%"></i><i style="top:15%;left:87%"></i><i style="top:24%;left:80%"></i>
+    <i style="top:5%;left:45%;opacity:.3"></i><i style="top:30%;left:5%"></i><i style="top:28%;left:93%"></i>
+  </div>
+
+  <div class="s-lune">
+    <span class="tache" style="top:22%;left:30%;width:18%;height:18%"></span>
+    <span class="tache" style="top:52%;left:56%;width:12%;height:12%"></span>
+    <span class="tache" style="top:60%;left:26%;width:9%;height:9%"></span>
+  </div>
+  <div class="s-phase">
+    <h2>Le jour se lève</h2>
+    <div class="t">01:32</div>
+  </div>
+
+  <div class="s-jetons">
+    <div class="s-jeton moi" style="top:38%;left:22%"><div class="s-pierre"><span>ᛋ</span></div><div class="nomj">Salva</div></div>
+    <div class="s-jeton" style="top:56%;left:12%"><div class="s-pierre"><span>ᛒ</span></div><div class="nomj">Bot 02 ⚙</div></div>
+    <div class="s-jeton mort" style="top:60%;left:33%"><div class="s-pierre"><span>ᚾ</span></div><div class="nomj">Nox</div></div>
+    <div class="s-jeton" style="top:38%;left:78%"><div class="s-pierre"><span>ᛗ</span></div><div class="nomj">Mira</div></div>
+    <div class="s-jeton mort" style="top:60%;left:67%"><div class="s-pierre"><span>ᛚ</span></div><div class="nomj">Léa</div></div>
+    <div class="s-jeton" style="top:56%;left:88%"><div class="s-pierre"><span>ᛒ</span></div><div class="nomj">Bot 08 ⚙</div></div>
+  </div>
+
+  <div class="s-side">
+    <div class="s-role">
+      <div class="eti">Camp des loups</div>
+      <div class="rnom">Loup-Garou</div>
+      <p>Chaque nuit, choisis une proie avec ta meute. Le jour, fonds-toi dans la foule.</p>
+    </div>
+    <div class="s-narr">On a retrouvé Léa à l'aube, la gorge ouverte. Elle était Villageoise.</div>
+    <div class="s-puces">
+      <span>Je vote…</span><span>…est suspect</span><span>Je défends…</span><span>Passons au vote</span>
+    </div>
+    <button class="s-btn">Passer au vote</button>
+    <div class="s-sous">1 / 4 veulent voter</div>
+  </div>
+
+  <div class="s-yeux">
+    <b style="left:14%"></b><b style="left:52%"></b><b style="left:83%"></b>
+  </div>
+
+  <div class="s-brume"><i></i><i></i></div>
+
+  <div class="s-sapins">
+    <svg viewBox="0 0 1200 300" preserveAspectRatio="none">
+      <path d="M0,300 L0,200 L40,210 L60,140 L85,205 L110,160 L140,215 L170,120 L200,210 L230,170 L260,220 L300,130 L335,215 L365,180 L400,225 L440,110 L475,215 L505,170 L540,225 L580,140 L615,215 L650,185 L690,230 L730,125 L765,215 L800,175 L840,225 L880,145 L915,215 L950,180 L990,228 L1030,120 L1065,212 L1100,170 L1140,220 L1200,190 L1200,300 Z" fill="#0c120e"/>
+      <path d="M0,300 L0,240 L50,250 L75,190 L100,248 L130,210 L165,255 L200,175 L235,250 L270,215 L310,258 L350,180 L390,252 L425,220 L465,260 L505,170 L545,252 L580,225 L620,262 L660,185 L700,255 L740,222 L780,262 L820,175 L860,254 L900,225 L940,262 L985,190 L1025,255 L1065,225 L1110,260 L1160,205 L1200,250 L1200,300 Z" fill="#060907"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ============ III. LE CABARET NOCTURNE ============ -->
+<section class="dir cabaret" id="d3">
+  <div class="tag">
+    <div class="num">Proposition III</div>
+    <div class="nom">Le Cabaret Nocturne</div>
+    <div class="pitch">Le village est une scène. Rideaux, projecteur, masques — la mascarade Art déco.</div>
+  </div>
+
+  <div class="rideau g"></div>
+  <div class="rideau d"></div>
+  <div class="fronton">
+    <svg viewBox="0 0 200 24" fill="none">
+      <path d="M100 2 L108 12 L100 22 L92 12 Z" fill="#d4af6a"/>
+      <path d="M60 12 H84 M116 12 H140" stroke="#d4af6a" stroke-width="1.5"/>
+      <circle cx="52" cy="12" r="2.5" fill="#d4af6a"/><circle cx="148" cy="12" r="2.5" fill="#d4af6a"/>
+    </svg>
+  </div>
+
+  <div class="c-scene">
+    <div class="c-proj"></div>
+    <div class="c-faisceau"></div>
+    <div class="c-phase">
+      <h2>Le jour se lève</h2>
+      <div class="orn">◆ ◆ ◆</div>
+      <div class="t">01:32</div>
+    </div>
+
+    <div class="c-jetons">
+      <div class="c-jeton moi" style="top:56%;left:50%"><div class="c-med"><span>S</span></div><div class="nomj">Salva</div></div>
+      <div class="c-jeton" style="top:44%;left:30%"><div class="c-med"><span>B</span></div><div class="nomj">Bot 02 ⚙</div></div>
+      <div class="c-jeton mort" style="top:70%;left:32%"><div class="c-med"><span>N</span></div><div class="nomj">Nox</div></div>
+      <div class="c-jeton" style="top:82%;left:50%"><div class="c-med"><span>M</span></div><div class="nomj">Mira</div></div>
+      <div class="c-jeton mort" style="top:70%;left:68%"><div class="c-med"><span>L</span></div><div class="nomj">Léa</div></div>
+      <div class="c-jeton" style="top:44%;left:70%"><div class="c-med"><span>B</span></div><div class="nomj">Bot 08 ⚙</div></div>
+    </div>
+  </div>
+
+  <div class="c-side">
+    <div class="c-role">
+      <div class="eti">Camp des loups</div>
+      <div class="rnom">Loup-Garou</div>
+      <p>Chaque nuit, choisis une proie avec ta meute. Le jour, fonds-toi dans la foule.</p>
+    </div>
+    <div class="c-narr">On a retrouvé <b>Léa</b> à l'aube, la gorge ouverte. Elle était <b>Villageoise</b>.</div>
+    <div class="c-puces">
+      <span>Je vote…</span><span>Suspect</span><span>Je défends…</span><span>Au vote</span>
+    </div>
+    <button class="c-btn">Passer au vote</button>
+    <div class="c-sous">1 / 4 VEULENT VOTER</div>
+  </div>
+</section>
+
+<nav id="switch" aria-label="Choix de la direction artistique">
+  <button class="on" data-d="d1">I · Grimoire</button>
+  <button data-d="d2">II · Lune de Sang</button>
+  <button data-d="d3">III · Cabaret</button>
+</nav>
+
+<script>
+const btns = document.querySelectorAll('#switch button');
+btns.forEach(b => b.addEventListener('click', () => {
+  btns.forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  document.querySelectorAll('.dir').forEach(s => s.classList.remove('active'));
+  document.getElementById(b.dataset.d).classList.add('active');
+}));
+</script>
+</body>
+</html>
