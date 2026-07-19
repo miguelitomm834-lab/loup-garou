@@ -838,6 +838,71 @@ input:focus{
 @keyframes revSortie{to{opacity:0}}
 @keyframes revRange{to{transform:translate(36vw,-30vh) scale(.18);opacity:0}}
 
+/* === DÉCOR PLEIN ÉCRAN === */
+.decor-ciel,.decor-village,.decor-brume,.decor-lucioles{
+  position:fixed;left:0;right:0;pointer-events:none;contain:layout style paint}
+.decor-ciel{top:0;bottom:0;z-index:-4;
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(141,111,224,.10), transparent 60%),
+    radial-gradient(100% 70% at 82% 8%,   rgba(181,163,239,.06), transparent 55%),
+    radial-gradient(1px 1px at 12% 22%, rgba(233,226,242,.16), transparent),
+    radial-gradient(1px 1px at 74% 12%, rgba(233,226,242,.12), transparent),
+    radial-gradient(1px 1px at 44% 32%, rgba(233,226,242,.10), transparent),
+    radial-gradient(1px 1px at 88% 30%, rgba(233,226,242,.10), transparent),
+    radial-gradient(1px 1px at 28% 46%, rgba(233,226,242,.08), transparent),
+    linear-gradient(180deg, rgba(15,13,26,0) 55%, rgba(11,9,22,.55) 100%);
+  opacity:.9;transition:background 1.2s ease,opacity 1.2s ease}
+body.ambiance-jour .decor-ciel{
+  background:
+    radial-gradient(130% 90% at 50% -12%, rgba(255,217,160,.14), transparent 62%),
+    radial-gradient(100% 70% at 80% 6%,   rgba(255,217,160,.07), transparent 55%),
+    linear-gradient(180deg, rgba(15,13,26,0) 60%, rgba(11,9,22,.35) 100%);
+  opacity:.85}
+.decor-village{bottom:0;z-index:-3;height:min(180px,22vh);opacity:.85;transition:opacity 1.2s ease}
+.decor-village svg{display:block;width:100%;height:100%}
+.decor-village .lisere{stroke:rgba(181,163,239,.45);stroke-width:1.1;stroke-linejoin:round;stroke-linecap:round}
+body.ambiance-jour .decor-village{opacity:.7}
+body.ambiance-jour .decor-village .lisere{stroke:rgba(255,217,160,.42)}
+.decor-brume{bottom:0;z-index:-2;height:min(220px,26vh);overflow:hidden;opacity:.7;transition:opacity 1.2s ease}
+.decor-brume span{position:absolute;left:-25%;width:150%;bottom:0;height:100%;
+  background:
+    radial-gradient(60% 70% at 20% 100%, rgba(155,140,192,.16), transparent 70%),
+    radial-gradient(55% 60% at 60% 100%, rgba(181,163,239,.12), transparent 72%),
+    radial-gradient(60% 65% at 88% 100%, rgba(141,111,224,.10), transparent 70%);
+  animation:brumeDerive 46s linear infinite alternate}
+.decor-brume span:nth-child(2){height:70%;opacity:.7;animation-duration:64s;animation-direction:alternate-reverse}
+@keyframes brumeDerive{from{transform:translateX(-6%)}to{transform:translateX(6%)}}
+body.ambiance-jour .decor-brume{opacity:.28}
+.decor-lucioles{top:0;height:min(48vh,420px);left:50%;width:min(560px,88vw);transform:translateX(-50%);
+  z-index:-1;transition:opacity 1.2s ease}
+.decor-lucioles i{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--or);
+  box-shadow:0 0 6px 2px rgba(255,217,160,.55), 0 0 14px 4px rgba(255,217,160,.22);
+  opacity:.7;animation:flotteLuciole 7s ease-in-out infinite}
+.decor-lucioles i:nth-child(1){top:24%;left:30%;animation-duration:6.5s;animation-delay:-1s}
+.decor-lucioles i:nth-child(2){top:18%;left:64%;animation-duration:8s;animation-delay:-3s;
+  background:var(--violet-clair);box-shadow:0 0 6px 2px rgba(181,163,239,.5),0 0 14px 4px rgba(181,163,239,.2)}
+.decor-lucioles i:nth-child(3){top:40%;left:22%;animation-duration:9s;animation-delay:-2s}
+.decor-lucioles i:nth-child(4){top:46%;left:74%;animation-duration:7.5s;animation-delay:-4s}
+.decor-lucioles i:nth-child(5){top:12%;left:46%;animation-duration:6s;animation-delay:-5s}
+.decor-lucioles i:nth-child(6){top:52%;left:52%;animation-duration:8.5s;animation-delay:-2.5s;
+  background:var(--violet-clair);box-shadow:0 0 6px 2px rgba(181,163,239,.45),0 0 12px 3px rgba(181,163,239,.18)}
+.decor-lucioles i:nth-child(7){top:30%;left:82%;animation-duration:7s;animation-delay:-6s}
+@keyframes flotteLuciole{0%,100%{transform:translate(0,0);opacity:.35}50%{transform:translate(6px,-12px);opacity:.85}}
+body.ambiance-jour .decor-lucioles i{opacity:0;animation:none}
+body.ambiance-jour .decor-lucioles{
+  background:
+    radial-gradient(60% 55% at 50% 0%, rgba(255,217,160,.16), transparent 70%),
+    radial-gradient(40% 40% at 68% 6%, rgba(255,217,160,.10), transparent 72%)}
+@media (max-width:600px){
+  .decor-village{height:110px;opacity:.7}
+  .decor-brume{height:150px;opacity:.5}
+  .decor-lucioles i:nth-child(n+5){display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .decor-brume span{transform:none}
+  .decor-lucioles i{opacity:.6}
+}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -948,6 +1013,25 @@ input:focus{
 <section id="ecranJeu" class="ecran">
   <div id="bandeau"></div>
   <div class="transition-phase" id="transPhase" aria-hidden="true"></div>
+
+  <!-- ══════════ DÉCOR PLEIN ÉCRAN (nuit/jour) ══════════ -->
+  <div class="decor-ciel" aria-hidden="true"></div>
+  <div class="decor-village" aria-hidden="true">
+    <svg viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="lgVillage" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1a1533"/>
+          <stop offset=".55" stop-color="#120e26"/>
+          <stop offset="1" stop-color="#0b0916"/>
+        </linearGradient>
+      </defs>
+      <path class="toits" fill="url(#lgVillage)" d="M0,150 L60,150 L90,118 L120,150 L200,150 L200,128 L250,128 L285,96 L320,128 L390,128 L390,150 L470,150 L500,120 L530,150 L620,150 L620,96 L646,96 L646,44 L680,14 L714,44 L714,96 L740,96 L740,150 L820,150 L855,118 L890,150 L980,150 L980,132 L1035,132 L1068,104 L1100,132 L1170,132 L1170,150 L1250,150 L1284,120 L1318,150 L1400,150 L1440,150 L1440,200 L0,200 Z"/>
+      <path class="lisere" fill="none" d="M0,150 L60,150 L90,118 L120,150 L200,150 L200,128 L250,128 L285,96 L320,128 L390,128 L390,150 L470,150 L500,120 L530,150 L620,150 L620,96 L646,96 L646,44 L680,14 L714,44 L714,96 L740,96 L740,150 L820,150 L855,118 L890,150 L980,150 L980,132 L1035,132 L1068,104 L1100,132 L1170,132 L1170,150 L1250,150 L1284,120 L1318,150 L1400,150 L1440,150"/>
+    </svg>
+  </div>
+  <div class="decor-brume" aria-hidden="true"><span></span><span></span></div>
+  <div class="decor-lucioles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
   <div class="jeu">
     <div>
       <div id="village" class="village">
@@ -1279,6 +1363,8 @@ function rendreJeu(){
   $('village').className = 'village'
     + (partie.statut === 'jour' ? ' jour' : '')
     + (partie.statut === 'vote' ? ' vote masque-mobile' : '');
+  document.body.classList.toggle('ambiance-jour', clair);   // décor plein écran jour/nuit
+  document.body.classList.toggle('ambiance-nuit', !clair);
   $('phaseNom').textContent = LIBELLES[partie.statut]?.nom || '';
   $('consigne').textContent = LIBELLES[partie.statut]?.consigne || '';
 
