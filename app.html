@@ -1377,7 +1377,8 @@ function rendreJeu(){
     if(partie.statut === 'nuit'){ transitionPhase('coucher'); Ambiance.cue('cloche2'); }
     else if(partie.statut === 'jour'){ transitionPhase('lever'); Ambiance.cue('coq'); }
   }
-  Ambiance.phase(partie.statut === 'nuit' ? 'nuit' : 'jour');   // nappe (fondu croisé, idempotent)
+  Ambiance.phase(partie.statut === 'nuit' || partie.statut === 'chasseur' ? 'nuit'
+               : partie.statut === 'vote' ? 'vote' : 'jour');   // nappe (fondu croisé, idempotent)
   phasePrec = partie.statut; cyclePrec = partie.cycle;
 
   checkMorts();
@@ -1924,11 +1925,58 @@ const Ambiance = (() => {
   }
   const attends = (fn, ms) => setTimeout(() => { try { if(ctx && !coupe) fn(); } catch(e){} }, ms);
 
-  // --- nappes en fondu croisé ---
+  // --- nappes musicales : fichiers réels en fondu croisé, repli synthé ---
+  const FICHIERS = { nuit:'assets/sons/musique_nuit.mp3', jour:'assets/sons/musique_jour.mp3', vote:'assets/sons/musique_vote.mp3' };
+  const VOL = { nuit:.6, jour:.5, vote:.55 };
+  let nappes = {};
+
+  function prepNappes(){
+    ['nuit','jour','vote'].forEach(type => {
+      if(nappes[type]) return;
+      const el = new Audio(FICHIERS[type]);
+      el.loop = true; el.preload = 'auto';
+      const gain = ctx.createGain(); gain.gain.value = 0; gain.connect(master);
+      const rec = { el, gain, ok:true, src:null };
+      try { rec.src = ctx.createMediaElementSource(el); rec.src.connect(gain); }
+      catch(e){ rec.ok = false; }
+      el.addEventListener('error', () => { rec.ok = false; if(ambType === type) phaseSynth(type); });
+      nappes[type] = rec;
+    });
+  }
+  function stopReel(sauf){
+    Object.keys(nappes).forEach(t => {
+      if(t === sauf) return;
+      const r = nappes[t];
+      try { r.gain.gain.cancelScheduledValues(T()); r.gain.gain.setTargetAtTime(0, T(), .7); } catch(e){}
+      setTimeout(() => { if(ambType !== t){ try { r.el.pause(); } catch(e){} } }, 2400);
+    });
+  }
+  function stopSynthAmb(){
+    if(!amb) return;
+    const a = amb; amb = null;
+    try { a.g.gain.cancelScheduledValues(T()); a.g.gain.setTargetAtTime(0, T(), .7); } catch(e){}
+    setTimeout(() => { try { a.s.stop(); } catch(e){} a.timers.forEach(clearTimeout); }, 2400);
+  }
+
   function phase(type){                 // 'nuit' | 'jour'
     desire = type;
     if(!ctx || ambType === type) return;
     ambType = type;
+    prepNappes();
+    const cible = nappes[type];
+    if(cible && cible.ok && cible.src){          // vraie musique dispo → fondu croisé
+      stopSynthAmb();
+      stopReel(type);
+      try { const p = cible.el.play(); if(p && p.catch) p.catch(()=>{}); } catch(e){}
+      try { cible.gain.gain.cancelScheduledValues(T()); cible.gain.gain.setTargetAtTime(VOL[type], T(), .8); } catch(e){}
+    } else {                                       // sinon → repli synthétisé
+      stopReel(null);
+      phaseSynth(type);
+    }
+  }
+
+  // Repli 100% synthétisé (si un fichier ne charge pas)
+  function phaseSynth(type){
     const anc = amb;
     if(anc){
       try { anc.g.gain.cancelScheduledValues(T()); anc.g.gain.setTargetAtTime(0, T(), .7); } catch(e){}
