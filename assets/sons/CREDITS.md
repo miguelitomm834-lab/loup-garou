@@ -1,8 +1,24 @@
 # Sons — crédits & licences
 
-Tous les sons du jeu sont **synthétisés en direct dans le navigateur** via l'API
+## Musiques d'ambiance (fichiers réels, CC0)
+
+Deux boucles musicales déposées dans `assets/sons/` le 2026-07-19, en attente
+d'intégration dans le module `Ambiance` :
+
+| Fichier | Usage | Titre original | Auteur | Source | Licence | Durée / poids |
+|---|---|---|---|---|---|---|
+| `musique_nuit.mp3` | Nappe musicale de nuit (sombre, drone) | « Dark Ambient Loop » | goulven | [freesound.org/people/goulven/sounds/371277](https://freesound.org/people/goulven/sounds/371277/) | **CC0 1.0** (Creative Commons Zero — domaine public, aucune attribution requise) | 30,9 s / 680 Ko |
+| `musique_jour.mp3` | Nappe musicale de jour (claire, luth médiéval) | « Medieval Lute Chords » | f-r-a-g-i-l-e | [freesound.org/people/f-r-a-g-i-l-e/sounds/506266](https://freesound.org/people/f-r-a-g-i-l-e/sounds/506266/) | **CC0 1.0** (Creative Commons Zero — domaine public, aucune attribution requise) | 14,5 s / 326 Ko |
+
+Note : les mp3 sont les rendus « HQ preview » (~180 kb/s VBR) fournis par le
+CDN de Freesound pour ces sons ; la licence CC0 du son original s'applique à
+l'identique. Attribution fournie ici par courtoisie, non obligatoire en CC0.
+
+## Effets sonores synthétisés
+
+Tous les autres sons du jeu sont **synthétisés en direct dans le navigateur** via l'API
 Web Audio (voir le module `Ambiance` dans `app.html`). **Aucun fichier audio
-externe n'est utilisé**, donc :
+externe n'est utilisé** pour les effets, donc :
 
 - aucun téléchargement, aucun poids réseau ;
 - **aucune question de copyright** — rien n'est emprunté à une banque de sons,
