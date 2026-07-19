@@ -801,12 +801,62 @@ input:focus{
 }
 /* === /ZONE COLONNE DROITE === */
 
+/* ---------- Révélation de rôle : carte plein écran (dos → face) ---------- */
+.revelation{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;
+  flex-direction:column;gap:22px;padding:24px;cursor:pointer;
+  background:radial-gradient(circle at 50% 40%,rgba(20,15,40,.86),rgba(6,4,14,.95));
+  backdrop-filter:blur(6px)}
+.revelation.actif{display:flex;animation:revFond .5s ease}
+@keyframes revFond{from{opacity:0}to{opacity:1}}
+.rev-carte{position:relative;width:min(300px,74vw);aspect-ratio:200/280;
+  transform-style:preserve-3d;animation:revFlip 1.25s cubic-bezier(.2,.75,.2,1) forwards}
+@keyframes revFlip{
+  0%{transform:rotateY(180deg) scale(.55);opacity:0}
+  16%{opacity:1}
+  100%{transform:rotateY(0deg) scale(1);opacity:1}}
+.rev-face{position:absolute;inset:0;border-radius:18px;overflow:hidden;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border:1px solid rgba(181,163,239,.35);
+  box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(141,111,224,.25);
+  display:flex;flex-direction:column;align-items:center;justify-content:center}
+.rev-dos{transform:rotateY(180deg);background:radial-gradient(circle at 50% 38%,#2a2150,#150f2c)}
+.rev-avant{transform:rotateY(0deg);padding:16px 14px 22px;
+  background:linear-gradient(165deg,#241c46,#15102c)}
+.revelation.loup .rev-avant{background:linear-gradient(165deg,#2c1826,#170f22);border-color:rgba(196,86,110,.4)}
+.rev-dos svg{position:absolute;inset:0;width:100%;height:100%}
+.rev-illus{flex:1;width:100%;display:flex;align-items:center;justify-content:center;min-height:0}
+.rev-illus svg{max-width:100%;max-height:100%}
+.rev-nom{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:700;
+  font-size:30px;color:var(--or);margin-top:4px;text-align:center;text-shadow:0 2px 18px rgba(255,217,160,.35)}
+.revelation.loup .rev-nom{color:#f0b6c1;text-shadow:0 2px 18px rgba(196,86,110,.4)}
+.rev-camp{font-size:11px;letter-spacing:.22em;font-weight:900;text-transform:uppercase;color:var(--doux);margin-top:6px}
+.rev-hint{font-size:13px;color:var(--faible);letter-spacing:.03em;opacity:0;
+  animation:revHint 1.6s ease-in-out infinite;animation-delay:1.3s}
+@keyframes revHint{0%,100%{opacity:.4}50%{opacity:.9}}
+.revelation.fermeture{animation:revSortie .6s ease forwards}
+.revelation.fermeture .rev-carte{animation:revRange .6s cubic-bezier(.5,0,.7,.4) forwards}
+@keyframes revSortie{to{opacity:0}}
+@keyframes revRange{to{transform:translate(36vw,-30vh) scale(.18);opacity:0}}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
 <button class="btn-son" id="btnSon" onclick="Ambiance.basculer()" aria-label="Couper ou remettre le son" title="Son">🔊</button>
+
+<!-- ══════════ RÉVÉLATION DE RÔLE (carte plein écran) ══════════ -->
+<div id="carteRevelation" class="revelation" aria-hidden="true" onclick="fermerRevelation()">
+  <div class="rev-carte">
+    <div class="rev-face rev-dos"></div>
+    <div class="rev-face rev-avant">
+      <div class="rev-illus"></div>
+      <div class="rev-nom"></div>
+      <div class="rev-camp"></div>
+    </div>
+  </div>
+  <div class="rev-hint">Clique pour continuer</div>
+</div>
 
 <!-- ══════════ CONNEXION ══════════ -->
 <section id="ecranAuth" class="ecran actif">
@@ -987,6 +1037,17 @@ const ROLES = {
   cupidon    : {nom:'Cupidon', emoji:'🏹', camp:'Camp du village',
     desc:"La première nuit, lie deux destins. Si l'un meurt, l'autre suit."}
 };
+/* Illustrations de carte (originales, gravure nuit) — une par rôle + dos. */
+const CARTES_SVG = {
+loup_garou: `<svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg" fill="none"><path d="M150 34 A17 17 0 1 0 158 68 A13 13 0 1 1 150 34 Z" fill="#ffd9a0" opacity=".85"/><g fill="#e9e2f2"><path d="M46 52 l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6-4 -4-1.6 4-1.6 Z" opacity=".8"/><circle cx="120" cy="40" r="1.4" opacity=".7"/><circle cx="70" cy="30" r="1.1" opacity=".6"/><path d="M40 150 l1.2 3 3 1.2 -3 1.2 -1.2 3 -1.2-3 -3-1.2 3-1.2 Z" opacity=".6"/></g><g stroke="#c4566e" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M96 210 C90 182 84 158 92 138 L74 116 L66 104 L92 100 L100 84 L110 100 L108 82 L120 74 L124 96 L136 86 L138 108 L130 116 C138 138 134 168 124 200 C118 214 104 224 96 210 Z" fill="#14102a"/><path d="M104 118 q6 -4 12 0" stroke-width="1.6"/><circle cx="110" cy="120" r="1.6" fill="#c4566e" stroke="none"/><path d="M92 104 q4 3 9 2" stroke-width="1.4"/><path d="M78 116 q10 6 22 4" stroke-width="1.4" opacity=".8"/></g><g stroke="#c4566e" stroke-width="1.3" opacity=".5" stroke-linecap="round"><path d="M66 100 q-14 -6 -24 -20"/><path d="M70 108 q-18 -2 -30 -12"/></g></svg>`,
+villageois: `<svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg" fill="none"><path d="M154 36 A16 16 0 1 0 161 68 A12 12 0 1 1 154 36 Z" fill="#ffd9a0" opacity=".8"/><g fill="#e9e2f2" opacity=".7"><path d="M44 46 l1.4 3.4 3.4 1.4 -3.4 1.4 -1.4 3.4 -1.4-3.4 -3.4-1.4 3.4-1.4 Z"/><circle cx="112" cy="34" r="1.3"/><circle cx="72" cy="26" r="1.1"/><circle cx="40" cy="120" r="1.2"/></g><g stroke="#9b8cc0" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M64 158 L64 214 L128 214 L128 158" fill="#14102a"/><path d="M56 160 L96 128 L136 160 Z" fill="#1c1731"/><path d="M88 214 L88 184 Q96 178 104 184 L104 214" stroke-width="1.8"/><rect x="72" y="176" width="10" height="10" rx="1" stroke-width="1.5"/></g><g stroke="#9b8cc0" stroke-width="2" stroke-linecap="round"><line x1="150" y1="122" x2="150" y2="226"/><path d="M140 122 L140 100 M150 122 L150 96 M160 122 L160 100" stroke-width="1.8"/><path d="M138 122 q12 -8 24 0" fill="none" stroke-width="1.6"/></g><g stroke="#ffd9a0" stroke-width="1.8" stroke-linejoin="round"><path d="M30 132 q16 -10 32 0 q-16 8 -32 0 Z" fill="#1c1731"/><path d="M40 132 q6 -14 12 0" fill="#14102a"/></g></svg>`,
+voyante: `<svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg" fill="none"><defs><radialGradient id="voy-glow" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#b5a3ef" stop-opacity=".55"/><stop offset="70%" stop-color="#8d6fe0" stop-opacity=".12"/><stop offset="100%" stop-color="#8d6fe0" stop-opacity="0"/></radialGradient></defs><path d="M152 32 A15 15 0 1 0 159 62 A11 11 0 1 1 152 32 Z" fill="#ffd9a0" opacity=".8"/><g fill="#b5a3ef"><path d="M42 44 l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6-4 -4-1.6 4-1.6 Z" opacity=".9"/><path d="M150 96 l1.2 3 3 1.2 -3 1.2 -1.2 3 -1.2-3 -3-1.2 3-1.2 Z" opacity=".7"/><circle cx="60" cy="28" r="1.3" opacity=".7"/><circle cx="118" cy="30" r="1.1" opacity=".6"/><circle cx="46" cy="150" r="1.2" opacity=".6"/></g><circle cx="100" cy="126" r="52" fill="url(#voy-glow)"/><circle cx="100" cy="126" r="42" fill="#1c1731" stroke="#b5a3ef" stroke-width="2.2"/><path d="M78 108 q10 -8 22 -6" stroke="#e9e2f2" stroke-width="1.4" opacity=".5" stroke-linecap="round"/><g stroke="#b5a3ef" stroke-width="2" stroke-linecap="round"><path d="M80 126 q20 -20 40 0 q-20 20 -40 0 Z" fill="#14102a"/><circle cx="100" cy="126" r="7" fill="#1c1731"/><circle cx="100" cy="126" r="2.4" fill="#b5a3ef" stroke="none"/></g><g stroke="#8d6fe0" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M74 168 L126 168 L118 186 L82 186 Z" fill="#14102a"/><line x1="70" y1="190" x2="130" y2="190"/></g></svg>`,
+sorciere: `<svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg" fill="none"><defs><radialGradient id="sor-glowA" cx="50%" cy="60%" r="60%"><stop offset="0%" stop-color="#b5a3ef" stop-opacity=".6"/><stop offset="100%" stop-color="#b5a3ef" stop-opacity="0"/></radialGradient><radialGradient id="sor-glowB" cx="50%" cy="60%" r="60%"><stop offset="0%" stop-color="#c4566e" stop-opacity=".55"/><stop offset="100%" stop-color="#c4566e" stop-opacity="0"/></radialGradient></defs><path d="M150 32 A15 15 0 1 0 157 62 A11 11 0 1 1 150 32 Z" fill="#ffd9a0" opacity=".8"/><g fill="#e9e2f2" opacity=".7"><path d="M44 46 l1.4 3.4 3.4 1.4 -3.4 1.4 -1.4 3.4 -1.4-3.4 -3.4-1.4 3.4-1.4 Z"/><circle cx="112" cy="34" r="1.3"/><circle cx="70" cy="26" r="1.1"/></g><g stroke="#8d6fe0" stroke-width="1.6" stroke-linecap="round" opacity=".55" fill="none"><path d="M66 132 q-8 -12 2 -22 q8 -8 0 -18"/><path d="M134 132 q9 -12 -1 -22 q-8 -8 1 -18"/></g><circle cx="66" cy="182" r="20" fill="url(#sor-glowA)"/><g stroke="#8d6fe0" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M60 134 L60 150 L48 178 Q46 200 66 200 Q86 200 84 178 L72 150 L72 134 Z" fill="#1c1731"/><line x1="56" y1="132" x2="76" y2="132"/><path d="M50 180 Q66 172 82 180 L84 178 Q66 200 48 178 Z" fill="#b5a3ef" stroke="none" opacity=".55"/></g><circle cx="134" cy="182" r="20" fill="url(#sor-glowB)"/><g stroke="#8d6fe0" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M128 134 L128 150 L116 178 Q114 200 134 200 Q154 200 152 178 L140 150 L140 134 Z" fill="#1c1731"/><line x1="124" y1="132" x2="144" y2="132"/><path d="M118 180 Q134 172 150 180 L152 178 Q134 200 116 178 Z" fill="#c4566e" stroke="none" opacity=".55"/></g></svg>`,
+chasseur: `<svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg" fill="none"><path d="M150 34 A15 15 0 1 0 157 64 A11 11 0 1 1 150 34 Z" fill="#ffd9a0" opacity=".85"/><g fill="#e9e2f2" opacity=".7"><path d="M44 48 l1.5 3.6 3.6 1.5 -3.6 1.5 -1.5 3.6 -1.5-3.6 -3.6-1.5 3.6-1.5 Z"/><circle cx="114" cy="36" r="1.3"/><circle cx="72" cy="28" r="1.1"/><circle cx="40" cy="120" r="1.2"/></g><g stroke="#ffd9a0" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M70 96 Q118 130 70 216"/><line x1="70" y1="96" x2="72" y2="216" stroke-width="1.3" opacity=".7"/><path d="M66 94 l8 4 M66 218 l8 -4" stroke-width="2"/></g><g stroke="#ffd9a0" stroke-width="2" stroke-linecap="round"><line x1="60" y1="156" x2="140" y2="156"/><path d="M140 156 l-10 -6 M140 156 l-10 6" stroke-width="1.8"/><path d="M60 156 l8 -5 M60 156 l8 5 M66 156 l8 -5 M66 156 l8 5" stroke-width="1.4" opacity=".8"/></g><g stroke="#9b8cc0" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M118 208 Q150 190 158 150"/><path d="M130 196 l10 -3 M137 187 l11 -4 M144 176 l10 -5 M150 164 l9 -5" stroke-width="1.2" opacity=".8"/></g></svg>`,
+cupidon: `<svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg" fill="none"><path d="M152 34 A15 15 0 1 0 159 64 A11 11 0 1 1 152 34 Z" fill="#ffd9a0" opacity=".8"/><g fill="#e9e2f2" opacity=".7"><path d="M42 46 l1.5 3.6 3.6 1.5 -3.6 1.5 -1.5 3.6 -1.5-3.6 -3.6-1.5 3.6-1.5 Z"/><circle cx="116" cy="34" r="1.3"/><circle cx="74" cy="26" r="1.1"/></g><circle cx="52" cy="210" r="4" fill="#ffd9a0"/><circle cx="148" cy="210" r="4" fill="#ffd9a0"/><path d="M52 210 Q100 168 148 210" stroke="#c4566e" stroke-width="1.6" stroke-dasharray="4 4" opacity=".7" fill="none"/><g stroke="#ffd9a0" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M56 108 Q100 88 144 108"/><line x1="56" y1="108" x2="144" y2="108" stroke-width="1.3" opacity=".7"/></g><g stroke="#ffd9a0" stroke-width="2" stroke-linecap="round"><line x1="100" y1="112" x2="100" y2="188"/><path d="M94 116 l6 -6 6 6" stroke-width="1.8" fill="none"/><path d="M96 182 l4 3 4 -3 M96 176 l4 3 4 -3" stroke-width="1.3" opacity=".8" fill="none"/></g><path d="M100 168 C86 150 74 144 74 156 C74 168 92 178 100 188 C108 178 126 168 126 156 C126 144 114 150 100 168 Z" fill="#1c1731" stroke="#c4566e" stroke-width="2.2" stroke-linejoin="round"/></svg>`,
+dos: `<svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg" fill="none"><defs><radialGradient id="dos-glow" cx="50%" cy="42%" r="42%"><stop offset="0%" stop-color="#b5a3ef" stop-opacity=".5"/><stop offset="60%" stop-color="#8d6fe0" stop-opacity=".14"/><stop offset="100%" stop-color="#8d6fe0" stop-opacity="0"/></radialGradient></defs><rect x="10" y="10" width="180" height="260" rx="12" stroke="#8d6fe0" stroke-width="2" opacity=".9"/><rect x="16" y="16" width="168" height="248" rx="9" stroke="#8d6fe0" stroke-width="1" opacity=".45"/><g stroke="#b5a3ef" stroke-width="1.4" stroke-linecap="round" opacity=".8" fill="none"><path d="M22 40 Q22 22 40 22"/><path d="M178 40 Q178 22 160 22"/><path d="M22 240 Q22 258 40 258"/><path d="M178 240 Q178 258 160 258"/><circle cx="30" cy="30" r="2" fill="#ffd9a0" stroke="none"/><circle cx="170" cy="30" r="2" fill="#ffd9a0" stroke="none"/><circle cx="30" cy="250" r="2" fill="#ffd9a0" stroke="none"/><circle cx="170" cy="250" r="2" fill="#ffd9a0" stroke="none"/></g><circle cx="100" cy="128" r="70" fill="url(#dos-glow)"/><g stroke="#8d6fe0" stroke-width="1.3" stroke-linecap="round" opacity=".55"><line x1="100" y1="60" x2="100" y2="46"/><line x1="100" y1="210" x2="100" y2="196"/><line x1="52" y1="128" x2="38" y2="128"/><line x1="162" y1="128" x2="148" y2="128"/><line x1="66" y1="94" x2="56" y2="84"/><line x1="134" y1="94" x2="144" y2="84"/><line x1="66" y1="162" x2="56" y2="172"/><line x1="134" y1="162" x2="144" y2="172"/></g><path d="M108 90 A38 38 0 1 0 118 166 A30 30 0 1 1 108 90 Z" fill="#b5a3ef" opacity=".9"/><g fill="#ffd9a0"><path d="M74 118 l1.8 4.4 4.4 1.8 -4.4 1.8 -1.8 4.4 -1.8-4.4 -4.4-1.8 4.4-1.8 Z" opacity=".9"/><circle cx="128" cy="150" r="1.6" opacity=".8"/><circle cx="120" cy="104" r="1.3" opacity=".7"/><circle cx="86" cy="150" r="1.3" opacity=".6"/></g></svg>`
+};
+
 /* Un animal unique par joueur, attribué par sa place dans la partie
    (place unique 1..12 → stable toute la partie, distinct pour chacun). */
 const ANIMAUX = ['🦊','🦝','🐈','🦉','🦡','🦌','🐗','🐦‍⬛','🦔','🦦','🐇','🐻'];
@@ -1422,16 +1483,37 @@ function pouvoirDeNuit(){
   return null;
 }
 
+/* ---------- Révélation de rôle plein écran (1×/partie) ---------- */
+let revTimer = null;
+function showRevelation(role, camp){
+  const info = ROLES[role]; if(!info) return;
+  const ov = $('carteRevelation');
+  ov.querySelector('.rev-dos').innerHTML   = CARTES_SVG.dos || '';
+  ov.querySelector('.rev-illus').innerHTML = CARTES_SVG[role] || '';
+  ov.querySelector('.rev-nom').textContent = info.emoji + ' ' + info.nom;
+  ov.querySelector('.rev-camp').textContent = info.camp;
+  ov.classList.toggle('loup', camp === 'loups');
+  ov.classList.remove('fermeture');
+  const carte = ov.querySelector('.rev-carte');   // relance le flip
+  carte.style.animation = 'none'; void carte.offsetWidth; carte.style.animation = '';
+  ov.classList.add('actif');
+  clearTimeout(revTimer);
+  revTimer = setTimeout(fermerRevelation, 4000);   // se range après 4 s…
+}
+function fermerRevelation(){                        // …ou au clic
+  const ov = $('carteRevelation');
+  if(!ov.classList.contains('actif') || ov.classList.contains('fermeture')) return;
+  clearTimeout(revTimer);
+  ov.classList.add('fermeture');
+  setTimeout(() => ov.classList.remove('actif','fermeture'), 650);
+}
+
 function rendreCarteRole(){
   const r = monRole();
   if(!r) return;
   const info = ROLES[r.role];
   $('carteRole').className = 'carte-role' + (r.camp === 'loups' ? ' loup' : '');
-  if(!roleAnime){                                        // révélation 3D, 1×/partie
-    roleAnime = true;
-    const c = $('carteRole'); c.classList.add('flip');
-    setTimeout(() => c.classList.remove('flip'), 1900);  // on retire le reflet une fois joué
-  }
+  if(!roleAnime){ roleAnime = true; showRevelation(r.role, r.camp); }  // carte plein écran, 1×/partie
   $('roleCamp').textContent = info.camp;
   $('roleNom').textContent  = info.emoji + ' ' + info.nom;
   $('roleDesc').textContent = info.desc;
