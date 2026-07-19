@@ -924,17 +924,66 @@ body.ambiance-jour .decor-lucioles i{opacity:0;animation:none}
 .carte-role.loup{background:rgba(26,13,10,.84)}
 .carte-role:not(.loup){border-color:var(--brume)}
 
-/* ══════════ SKINS — matières, gravures, auras, morts (chantiers 5-6) ══════════ */
-/* Matières : le dégradé de la pierre. 'granit' = défaut (déjà sur .jeton). */
-.jeton.mat-bois{background:radial-gradient(circle at 50% 120%,rgba(199,62,46,.08),transparent 56%),linear-gradient(160deg,#4a3826,#241a12)}
-.jeton.mat-obsidienne{background:radial-gradient(circle at 38% 26%,rgba(224,90,68,.14),transparent 34%),linear-gradient(160deg,#22222b,#050507)}
-.jeton.mat-marbre{background:radial-gradient(circle at 30% 24%,rgba(255,255,255,.5),transparent 40%),linear-gradient(150deg,#d9d5cc 0%,#c3bdb0 55%,#a9a294 100%)}
-.jeton.mat-marbre .grave{color:#3a3830;text-shadow:0 1px 0 rgba(255,255,255,.4)}
-.jeton.mat-os{background:radial-gradient(circle at 34% 26%,rgba(255,255,255,.4),transparent 42%),linear-gradient(155deg,#e6ddc9,#c8bca2)}
-.jeton.mat-os .grave{color:#4a4436;text-shadow:0 1px 0 rgba(255,255,255,.35)}
-/* Gravure (glyphe au centre de la pierre) — la couleur = teinte, posée en inline */
-.grave{font-size:24px;line-height:1;font-family:'Alegreya',serif}
+/* ══════════ SKINS — matières, gravures, auras, morts (réf. forge_atelier_3) ══════════ */
+/* Rune GRAVÉE : creusée dans la pierre (réf.). La teinte choisie colore la rune
+   sur les pierres sombres ; les matières claires (marbre/os) imposent leur encre. */
+.grave{font-size:24px;line-height:1;font-family:'Eczar',serif;font-weight:600;
+  color:var(--teinte,#b7ad99);
+  text-shadow:0 2px 3px rgba(0,0,0,.85), 0 -1px 0 rgba(0,0,0,.7), 0 1px 0 rgba(255,255,255,.10)}
 .carte-vote .grave{font-size:16px}
+/* --- MATIÈRES DÉTAILLÉES (couches de fond, zéro image — copie de la réf.) --- */
+.m-granit{background:
+  linear-gradient(135deg, rgba(255,255,255,.09), transparent 32%),
+  radial-gradient(2.5px 2.5px at 22% 30%, rgba(222,216,200,.16), transparent 65%),
+  radial-gradient(2px 2px at 66% 20%, rgba(222,216,200,.11), transparent 65%),
+  radial-gradient(2.5px 2.5px at 40% 72%, rgba(0,0,0,.55), transparent 65%),
+  radial-gradient(2px 2px at 79% 56%, rgba(222,216,200,.10), transparent 65%),
+  radial-gradient(2px 2px at 30% 52%, rgba(0,0,0,.5), transparent 65%),
+  radial-gradient(1.6px 1.6px at 58% 84%, rgba(222,216,200,.12), transparent 65%),
+  linear-gradient(112deg, transparent 46.5%, rgba(0,0,0,.5) 47%, rgba(0,0,0,.5) 47.7%, transparent 48.4%),
+  linear-gradient(160deg,#28332b,#151c17)}
+.m-bois{border-color:#4d3c28!important;background:
+  linear-gradient(135deg, rgba(255,220,170,.08), transparent 34%),
+  radial-gradient(5px 5px at 64% 34%, rgba(0,0,0,.55), rgba(0,0,0,.2) 55%, transparent 70%),
+  repeating-radial-gradient(ellipse at 34% 42%, transparent 0 6px, rgba(0,0,0,.30) 6px 8px, rgba(120,80,40,.10) 8px 9px),
+  linear-gradient(100deg, transparent 30%, rgba(190,120,50,.10) 33%, transparent 38%, transparent 60%, rgba(190,120,50,.08) 64%, transparent 69%),
+  linear-gradient(160deg,#3e2f20,#1e150d)}
+.m-obsi{border-color:#3a3154!important;background:
+  linear-gradient(120deg, rgba(255,255,255,.22) 8%, transparent 22%),
+  linear-gradient(300deg, rgba(138,118,200,.18) 4%, transparent 26%),
+  linear-gradient(64deg, transparent 55%, rgba(255,255,255,.06) 57%, transparent 60%),
+  linear-gradient(150deg,#1c1626,#0b0811 55%,#161129)}
+.m-marbre{border-color:#e5dfd0!important;background:
+  linear-gradient(135deg, rgba(255,255,255,.5), transparent 40%),
+  linear-gradient(115deg, transparent 42%, rgba(90,84,70,.45) 42.6%, transparent 43.4%),
+  linear-gradient(74deg, transparent 64%, rgba(90,84,70,.32) 64.7%, transparent 65.6%),
+  linear-gradient(128deg, transparent 76%, rgba(90,84,70,.28) 76.5%, transparent 77.2%),
+  linear-gradient(105deg, transparent 55%, rgba(184,147,74,.4) 55.4%, transparent 56%),
+  linear-gradient(160deg,#d6d0c1,#a29c8d)}
+.m-marbre .grave{color:#4b463c;text-shadow:0 1px 0 rgba(255,255,255,.55), 0 2px 2px rgba(0,0,0,.2)}
+.m-os{border-color:#f0e8d4!important;background:
+  linear-gradient(135deg, rgba(255,255,255,.4), transparent 42%),
+  radial-gradient(2.5px 2.5px at 26% 26%, rgba(107,95,69,.4), transparent 70%),
+  radial-gradient(2px 2px at 44% 58%, rgba(107,95,69,.32), transparent 70%),
+  radial-gradient(2.5px 2.5px at 68% 40%, rgba(107,95,69,.36), transparent 70%),
+  radial-gradient(2px 2px at 58% 78%, rgba(107,95,69,.3), transparent 70%),
+  linear-gradient(96deg, transparent 58%, rgba(107,95,69,.35) 58.4%, transparent 59%),
+  linear-gradient(160deg,#e9dfc8,#c2b59a)}
+.m-os .grave{color:#6b5f45;text-shadow:0 1px 0 rgba(255,255,255,.4), 0 2px 2px rgba(0,0,0,.15)}
+/* Pierre de sang : matière signature — veines écarlates qui palpitent */
+.m-sang{border-color:#6e2430!important;background:
+  linear-gradient(135deg, rgba(255,130,110,.10), transparent 30%),
+  radial-gradient(2px 2px at 30% 64%, rgba(0,0,0,.5), transparent 65%),
+  radial-gradient(2px 2px at 70% 30%, rgba(255,110,90,.10), transparent 65%),
+  linear-gradient(150deg,#2c1014,#150609 55%,#241017)}
+.m-sang::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:
+   linear-gradient(116deg, transparent 44%, rgba(224,90,68,.55) 44.6%, rgba(224,90,68,.55) 45.3%, transparent 46%),
+   linear-gradient(64deg, transparent 62%, rgba(199,62,46,.45) 62.6%, transparent 63.4%),
+   linear-gradient(140deg, transparent 72%, rgba(224,90,68,.35) 72.5%, transparent 73.1%);
+  filter:blur(.6px);animation:veines 3.4s ease-in-out infinite}
+@keyframes veines{0%,100%{opacity:.55}50%{opacity:1}}
+.m-sang .grave{color:#e8b3a3;text-shadow:0 2px 3px rgba(0,0,0,.9), 0 0 14px rgba(224,90,68,.35)}
 /* Auras : halo derrière la pierre, discret le jour, renforcé la nuit */
 .jeton{position:relative}
 .siege .jeton::before{content:'';position:absolute;inset:-6px;border-radius:inherit;z-index:-1;
@@ -958,27 +1007,172 @@ body.ambiance-jour .siege[class*="aura-"] .jeton::before{opacity:.28}
 .siege.meurt-brume .jeton{animation:mortBrume 1.3s ease forwards}
 @keyframes mortBrume{0%{opacity:1;filter:none}100%{opacity:.5;filter:blur(2.5px) grayscale(.5)}}
 
-/* ══════════ FORGE (atelier des pierres) ══════════ */
-.forge-grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:10px}
-.forge-opt{position:relative;border:1px solid var(--bord);border-radius:12px;padding:12px 6px 8px;
-  text-align:center;cursor:pointer;background:rgba(10,14,11,.5);transition:border-color .15s,transform .1s}
-.forge-opt:hover{border-color:var(--sang)}
-.forge-opt.on{border-color:var(--sang);box-shadow:0 0 0 1px var(--sang),0 0 16px rgba(199,62,46,.3)}
-.forge-opt.verrou{opacity:.5;cursor:not-allowed}
-.forge-opt.verrou:hover{border-color:var(--bord)}
-.forge-opt .fo-nom{font-family:'Jost',sans-serif;font-size:10.5px;letter-spacing:.04em;color:var(--brume);margin-top:6px;display:block}
-.forge-opt .fo-cond{font-family:'Jost',sans-serif;font-size:9.5px;color:var(--faible);display:block;margin-top:2px;line-height:1.25}
-.forge-pierre{width:44px;height:50px;margin:0 auto;border-radius:46% 54% 52% 48% / 55% 48% 52% 45%;
-  border:1px solid var(--bord);display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(160deg,var(--pierre1),var(--pierre2))}
-.forge-pierre .grave{font-size:20px}
-.forge-cat{font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--sang-vif);margin:22px 0 10px}
-.forge-cat:first-child{margin-top:0}
-.forge-apercu{position:sticky;top:20px;text-align:center}
-.forge-apercu .ap-pierre{width:92px;height:104px;margin:0 auto 10px;border-radius:46% 54% 52% 48% / 55% 48% 52% 45%;
-  border:1px solid var(--bord);display:flex;align-items:center;justify-content:center;position:relative}
-.forge-apercu .ap-pierre .grave{font-size:42px}
+/* ══════════ LA FORGE (réf. forge_atelier_3.html — CSS repris tel quel) ══════════ */
+.forge-main{position:relative;z-index:1;max-width:1140px;margin:0 auto;
+  display:grid;grid-template-columns:350px 1fr;gap:44px}
+/* --- la pierre --- */
+.scene{position:sticky;top:30px;align-self:start;text-align:center}
+.scene .sur{font-family:'Jost',sans-serif;font-size:10.5px;letter-spacing:.44em;text-transform:uppercase;color:var(--sang-vif)}
+.scene h1{font-family:'Eczar',serif;font-weight:600;font-size:38px;color:var(--os-vif);margin:4px 0 20px;font-style:normal}
+.socle{position:relative;width:260px;height:260px;margin:0 auto;display:flex;align-items:center;justify-content:center}
+.socle::before{content:"";position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle, rgba(154,168,158,.10), transparent 62%)}
+.socle::after{content:"";position:absolute;left:14%;right:14%;bottom:8%;height:18px;border-radius:50%;
+  background:radial-gradient(ellipse, rgba(0,0,0,.65), transparent 70%)}
+.pierre{width:150px;height:172px;position:relative;z-index:2;
+  border-radius:46% 54% 52% 48% / 55% 48% 52% 45%;border:1px solid var(--bord);
+  box-shadow:inset 0 10px 22px rgba(255,255,255,.06), inset 0 -12px 20px rgba(0,0,0,.35), 0 18px 40px rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center;transition:box-shadow .3s, filter .4s}
+.pierre .grave{font-size:60px}
+/* auras (réf. + brume adaptée au catalogue) */
+.a-braise{box-shadow:inset 0 10px 22px rgba(255,255,255,.06),0 18px 40px rgba(0,0,0,.6),
+  0 0 0 3px rgba(199,62,46,.55),0 0 42px rgba(199,62,46,.42);animation:pulse-a 3.2s ease-in-out infinite}
+.a-ambre{box-shadow:inset 0 10px 22px rgba(255,255,255,.06),0 18px 40px rgba(0,0,0,.6),
+  0 0 0 3px rgba(255,182,74,.5),0 0 46px rgba(255,182,74,.38)}
+.a-lune{box-shadow:inset 0 10px 22px rgba(255,255,255,.06),0 18px 40px rgba(0,0,0,.6),
+  0 0 0 3px rgba(168,190,230,.5),0 0 46px rgba(168,190,230,.4)}
+.a-brume{box-shadow:inset 0 10px 22px rgba(255,255,255,.06),0 18px 40px rgba(0,0,0,.6),
+  0 0 0 3px rgba(154,168,158,.5),0 0 46px rgba(154,168,158,.38)}
+@keyframes pulse-a{0%,100%{filter:brightness(1)}50%{filter:brightness(1.16)}}
+/* essayage spectral */
+.spectral{filter:saturate(.8) brightness(1.05)}
+.spectral::after{content:"";position:absolute;inset:-4px;border-radius:inherit;
+  border:1.5px dashed rgba(222,216,200,.5);animation:scintilleF 1.6s ease-in-out infinite;pointer-events:none}
+@keyframes scintilleF{0%,100%{opacity:.35}50%{opacity:.85}}
+.etiquette-spectre{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);z-index:5;
+  font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--os-vif);background:rgba(10,14,11,.85);border:1px solid var(--bord);
+  border-radius:999px;padding:4px 13px;white-space:nowrap;opacity:0;transition:opacity .3s}
+.etiquette-spectre.on{opacity:1}
+/* cérémonie */
+.ombre{filter:brightness(.22) saturate(.3)!important}
+.lueur{position:absolute;width:2px;background:linear-gradient(var(--ambre), rgba(255,182,74,.1));
+  box-shadow:0 0 12px var(--ambre);border-radius:2px;opacity:0;animation:fissure-l .9s ease-out forwards}
+@keyframes fissure-l{0%{opacity:0;transform:scaleY(0) rotate(var(--r))}40%{opacity:1}
+  100%{opacity:.9;transform:scaleY(1) rotate(var(--r))}}
+.frappe::after{content:"";position:absolute;inset:-10px;border-radius:inherit;
+  background:radial-gradient(circle, rgba(255,240,210,.9), transparent 62%);
+  animation:flashF .34s ease-out forwards;pointer-events:none;z-index:4}
+@keyframes flashF{0%{opacity:1}100%{opacity:0}}
+.etincelle{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--ambre);
+  box-shadow:0 0 8px var(--ambre);pointer-events:none;z-index:4;animation:jaillit .55s ease-out forwards}
+@keyframes jaillit{0%{opacity:1;transform:translate(0,0) scale(1)}
+  100%{opacity:0;transform:translate(var(--dx), var(--dy)) scale(.4)}}
+.grain-p{position:absolute;width:3px;height:3px;border-radius:50%;background:#8b8171;
+  pointer-events:none;z-index:3;animation:chute .9s ease-in forwards}
+@keyframes chute{0%{opacity:.9;transform:translateY(0)}100%{opacity:0;transform:translateY(34px)}}
+.bandeau-f{position:absolute;top:-14px;left:50%;transform:translate(-50%,-100%);z-index:6;
+  text-align:center;opacity:0;transition:.4s;pointer-events:none;white-space:nowrap}
+.bandeau-f.on{opacity:1;transform:translate(-50%,-115%)}
+.bandeau-f .orn{color:var(--ambre);font-size:11px;letter-spacing:.5em}
+.bandeau-f .nom{font-family:'Eczar',serif;font-weight:600;font-size:22px;color:var(--os-vif);
+  text-shadow:0 0 22px rgba(255,182,74,.5)}
+.bandeau-f .st{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--ambre)}
+.lore{min-height:38px;margin-top:14px;font-style:italic;font-size:14px;color:var(--brume);line-height:1.45;padding:0 12px;transition:color .3s}
+.lore.vive{color:var(--os)}
+.scene .pseudo{font-size:17px;margin-top:6px}
+.collection{margin:18px auto 0;max-width:240px}
+.collection .c-lab{display:flex;justify-content:space-between;font-family:'Jost',sans-serif;
+  font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--brume);margin-bottom:6px}
+.collection .c-lab b{color:var(--os-vif)}
+.c-barre{height:5px;border-radius:999px;background:rgba(56,68,59,.55);overflow:hidden}
+.c-barre i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--sang),var(--ambre))}
+.graver{margin-top:20px;font-family:'Eczar',serif;font-size:17px;font-weight:600;color:#170f0b;
+  background:linear-gradient(150deg,var(--ambre),var(--sang-vif) 70%);border:none;border-radius:5px;
+  padding:13px 44px;cursor:pointer;box-shadow:0 6px 22px rgba(199,62,46,.35);transition:transform .15s}
+.graver:hover{transform:translateY(-2px)}
+.forge-msg{min-height:18px;margin-top:10px;font-size:13px;color:var(--brume);text-align:center}
+/* --- atelier --- */
+.atelier .lab{font-family:'Jost',sans-serif;font-size:10.5px;letter-spacing:.44em;text-transform:uppercase;color:var(--ambre);margin-bottom:12px}
+.quete{display:grid;grid-template-columns:64px 1fr auto;gap:16px;align-items:center;
+  background:linear-gradient(120deg, rgba(199,62,46,.14), rgba(10,14,11,.72) 55%);
+  border:1px solid rgba(199,62,46,.5);border-radius:9px;padding:15px 18px;margin-bottom:26px}
+.quete .q-mini{width:52px;height:60px}
+.quete h2{font-family:'Eczar',serif;font-weight:600;font-size:18px;color:var(--os-vif);font-style:normal}
+.quete .q-txt{font-size:13.5px;font-style:italic;opacity:.85;margin-top:2px}
+.q-barre{height:5px;border-radius:999px;background:rgba(56,68,59,.55);margin-top:9px;overflow:hidden}
+.q-barre i{display:block;height:100%;background:linear-gradient(90deg,var(--sang),var(--ambre))}
+.q-btn{font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ambre);background:none;border:1px solid rgba(255,182,74,.55);border-radius:999px;
+  padding:9px 16px;cursor:pointer;transition:.2s;white-space:nowrap}
+.q-btn:hover{background:rgba(255,182,74,.14)}
+.onglets{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.onglets button{font-family:'Eczar',serif;font-size:15.5px;color:var(--os);background:none;
+  border:1px solid var(--bord);border-radius:5px;padding:9px 20px;cursor:pointer;transition:.2s}
+.onglets button:hover{border-color:var(--ambre);color:var(--os-vif)}
+.onglets button.on{border-color:var(--sang);color:var(--os-vif);
+  background:linear-gradient(150deg, rgba(199,62,46,.18), rgba(255,182,74,.07))}
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:16px}
+.opt{position:relative;background:rgba(10,14,11,.72);border:1px solid var(--bord);border-radius:8px;
+  padding:16px 10px 12px;text-align:center;cursor:pointer;transition:transform .22s, border-color .22s, box-shadow .3s}
+.opt:hover{transform:translateY(-3px);border-color:var(--brume)}
+.opt.sel{border-color:var(--sang);box-shadow:0 0 0 1px var(--sang), 0 8px 24px rgba(199,62,46,.18)}
+.opt[data-c="m-obsi"]:hover{box-shadow:0 10px 26px rgba(138,118,200,.22)}
+.opt[data-c="m-sang"]:hover{box-shadow:0 10px 26px rgba(199,62,46,.3)}
+.opt[data-c="m-marbre"]:hover{box-shadow:0 10px 26px rgba(222,216,200,.14)}
+.opt .apercu{height:82px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;position:relative}
+/* la niche : un creux de présentation derrière chaque mini-pierre */
+.opt .apercu::before{content:"";position:absolute;width:68px;height:68px;border-radius:50%;
+  background:radial-gradient(circle at 50% 36%, rgba(0,0,0,.55), rgba(0,0,0,.16) 58%, transparent 74%);
+  box-shadow:inset 0 3px 8px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.04)}
+.opt h3{font-family:'Jost',sans-serif;font-weight:500;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--os-vif);font-style:normal}
+.opt .cond{font-size:12px;font-style:italic;opacity:.6;margin-top:3px;line-height:1.35;min-height:16px}
+.opt .part{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:.08em;color:var(--brume);margin-top:4px}
+.tier{position:absolute;top:8px;left:8px;font-family:'Jost',sans-serif;font-size:8.5px;
+  letter-spacing:.2em;text-transform:uppercase;border-radius:3px;padding:2.5px 7px;z-index:2;font-style:normal}
+.t-ouvragee{color:var(--ambre);border:1px solid rgba(255,182,74,.5)}
+.t-maitresse{color:#170f0b;background:linear-gradient(120deg,var(--ambre),var(--sang-vif));font-weight:500}
+.opt[data-tier="maitresse"]{border-color:rgba(255,182,74,.4)}
+.opt[data-tier="maitresse"]:not(.lock){animation:halo-m 4s ease-in-out infinite}
+@keyframes halo-m{0%,100%{box-shadow:0 0 0 0 rgba(255,182,74,0)}50%{box-shadow:0 0 22px 0 rgba(255,182,74,.22)}}
+.mini{width:48px;height:56px;position:relative;z-index:1;border-radius:46% 54% 52% 48% / 55% 48% 52% 45%;
+  border:1px solid var(--bord);
+  box-shadow:inset 0 5px 10px rgba(255,255,255,.05), inset 0 -6px 10px rgba(0,0,0,.3), 0 6px 14px rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:center}
+.mini .grave{font-size:21px;text-shadow:0 1px 2px rgba(0,0,0,.85), 0 1px 0 rgba(255,255,255,.08)}
+.mini.a-braise{box-shadow:inset 0 5px 10px rgba(255,255,255,.05),0 6px 14px rgba(0,0,0,.5),
+  0 0 0 2px rgba(199,62,46,.55),0 0 18px rgba(199,62,46,.45)}
+.mini.a-ambre{box-shadow:inset 0 5px 10px rgba(255,255,255,.05),0 6px 14px rgba(0,0,0,.5),
+  0 0 0 2px rgba(255,182,74,.5),0 0 20px rgba(255,182,74,.4)}
+.mini.a-lune{box-shadow:inset 0 5px 10px rgba(255,255,255,.05),0 6px 14px rgba(0,0,0,.5),
+  0 0 0 2px rgba(168,190,230,.5),0 0 20px rgba(168,190,230,.42)}
+.mini.a-brume{box-shadow:inset 0 5px 10px rgba(255,255,255,.05),0 6px 14px rgba(0,0,0,.5),
+  0 0 0 2px rgba(154,168,158,.5),0 0 20px rgba(154,168,158,.4)}
+/* aperçus des morts au survol */
+.opt[data-mort="fissure"]:hover .mini{transform:rotate(13deg);opacity:.6}
+.opt[data-mort="fissure"] .mini::after{content:"";position:absolute;top:10%;left:52%;width:2px;height:0;
+  background:var(--nuit);transform:rotate(22deg);transition:height .4s}
+.opt[data-mort="fissure"]:hover .mini::after{height:74%}
+.opt[data-mort="poussiere"]:hover .mini{animation:mini-effrite 1.1s ease-in forwards}
+@keyframes mini-effrite{100%{transform:rotate(9deg) translateY(7px) scale(.86);opacity:.25;filter:blur(.8px) grayscale(.6)}}
+.opt[data-mort="mousse"] .mini{overflow:hidden}
+.opt[data-mort="mousse"] .mini::after{content:"";position:absolute;left:0;right:0;bottom:0;height:0;
+  background:linear-gradient(to top, rgba(62,96,66,.85), transparent);transition:height 1s}
+.opt[data-mort="mousse"]:hover .mini::after{height:80%}
+.opt[data-mort="brume_mort"] .mini{transition:1.2s}
+.opt[data-mort="brume_mort"]:hover .mini{opacity:.3;filter:grayscale(1) blur(.6px)}
+/* verrouillé */
+.opt.lock .mini{filter:brightness(.34) saturate(.45)}
+.opt.lock .mini .grave{opacity:.55}
+.opt.lock .cond{color:var(--ambre);opacity:.8}
+.opt.lock:hover{border-color:rgba(255,182,74,.45)}
+.opt.lock:hover::after{content:"Essayer";position:absolute;top:8px;right:8px;
+  font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--os-vif);background:rgba(10,14,11,.85);border:1px solid var(--bord);border-radius:3px;padding:3px 8px}
+.anneau-p{position:absolute;top:-7px;right:6px;width:34px;height:34px;border-radius:50%;z-index:2;
+  display:flex;align-items:center;justify-content:center;
+  background:conic-gradient(var(--ambre) calc(var(--p)*1%), rgba(56,68,59,.6) 0)}
+.anneau-p::before{content:"";position:absolute;inset:3px;border-radius:50%;background:#0d120e}
+.anneau-p b{position:relative;font-family:'Jost',sans-serif;font-weight:500;font-size:9.5px;color:var(--ambre)}
+/* teintes : pastilles rondes simples dans l'atelier */
+.pastille{width:30px;height:30px;border-radius:50%;border:1px solid var(--bord);position:relative;z-index:1}
+@media(max-width:700px){
+  .forge-main{grid-template-columns:1fr;gap:24px}
+  .scene{position:static}
+  .quete{grid-template-columns:52px 1fr;gap:12px}
+  .quete .q-btn{grid-column:1/-1;justify-self:start}
+  .grille{grid-template-columns:repeat(auto-fill,minmax(106px,1fr));gap:11px}
+}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -1063,23 +1257,46 @@ body.ambiance-jour .siege[class*="aura-"] .jeton::before{opacity:.28}
   </div>
 </section>
 
-<!-- ══════════ FORGE (atelier des pierres) ══════════ -->
+<!-- ══════════ LA FORGE (réf. forge_atelier_3.html) ══════════ -->
 <section id="ecranForge" class="ecran">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:16px;flex-wrap:wrap">
-    <div>
-      <div class="eyebrow">La forge</div>
-      <h1 style="font-size:34px">Ta pierre</h1>
-    </div>
-    <button class="btn-fantome" onclick="montrer('ecranLobby')">Retour</button>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:6px">
+    <button class="btn-fantome" onclick="montrer('ecranLobby')">← Retour au village</button>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 220px;gap:32px;align-items:start" class="jeu">
-    <div id="forgeCategories"></div>
-    <div class="panneau forge-apercu">
-      <div class="eyebrow" style="margin-bottom:12px">Aperçu</div>
-      <div class="ap-pierre" id="forgeApercu"><span class="grave"></span></div>
-      <div class="nom-siege" id="forgeApercuNom" style="margin-bottom:16px"></div>
-      <button class="btn" style="width:100%" id="forgeSauver" onclick="sauverForge()">Graver</button>
-      <div class="muet" id="forgeMsg" style="text-align:center;margin-top:10px;min-height:18px"></div>
+  <div class="forge-main">
+    <div class="scene">
+      <div class="sur">La Forge</div>
+      <h1>Ta pierre</h1>
+      <div class="socle">
+        <div class="bandeau-f" id="fBandeau">
+          <div class="orn">◆ ◆ ◆</div>
+          <div class="nom" id="fBandeauNom"></div>
+          <div class="st">Taillée</div>
+        </div>
+        <div class="pierre m-granit" id="fPierre"><span class="grave" id="fRune">?</span></div>
+        <div class="etiquette-spectre" id="fSpectreTag">Aperçu — pas encore taillée</div>
+      </div>
+      <div class="lore" id="fLore">Chaque partie jouée est un coup de burin.</div>
+      <div class="pseudo" id="fPseudo"></div>
+      <div class="collection">
+        <div class="c-lab"><span>Collection</span><b id="fCollection">—</b></div>
+        <div class="c-barre"><i id="fCollectionBarre" style="width:0%"></i></div>
+      </div>
+      <button class="graver" id="fGraver" onclick="sauverForge()">Graver</button>
+      <div class="forge-msg" id="forgeMsg"></div>
+    </div>
+    <div class="atelier">
+      <div class="quete" id="fQuete" style="display:none">
+        <div class="mini m-granit q-mini"><span class="grave" id="fQueteGlyphe"></span></div>
+        <div>
+          <h2 id="fQueteTitre"></h2>
+          <div class="q-txt" id="fQueteTxt"></div>
+          <div class="q-barre"><i id="fQueteBarre" style="width:0%"></i></div>
+        </div>
+        <button class="q-btn" onclick="ceremonieForge()">Voir le déblocage</button>
+      </div>
+      <div class="lab">L'atelier du tailleur</div>
+      <div class="onglets" id="fOnglets"></div>
+      <div class="grille" id="fGrille"></div>
     </div>
   </div>
 </section>
@@ -1250,46 +1467,13 @@ const $ = id => document.getElementById(id);
 const GRAVURES = {
   initiale:null,  // cas spécial : initiale du pseudo
   rune_s:'ᛋ', rune_b:'ᛒ', rune_m:'ᛗ', rune_n:'ᚾ', rune_l:'ᛚ', rune_r:'ᚱ', rune_t:'ᛏ', rune_e:'ᛖ',
-  croissant_libre:'☾', etoile:'✦', feuille:'❧', montagne:'▲',
-  croissant:'☽', oeil:'◎', patte:'❈', gibet:'†', coeur:'♥'
+  croissant_libre:'☾', etoile:'✶', feuille:'❧', montagne:'▲',
+  croissant:'☽', oeil:'◉', patte:'🐾', gibet:'Ϯ', coeur:'♥'
 };
+/* Classes CSS des matières (réf. forge_atelier_3) — partagées forge + cercle de jeu */
+const MAT_CLASSE = { granit:'m-granit', bois:'m-bois', obsidienne:'m-obsi', marbre:'m-marbre', os:'m-os', sang:'m-sang' };
+const AURA_CLASSE = { braise:'a-braise', lucioles:'a-ambre', brume:'a-brume', lune:'a-lune' };
 const TEINTES = { os:'#c8beab', ambre:'#d9a856', sang_pale:'#b56a5e', brume:'#8fa396' };
-// Catalogue affiché dans la forge : libellé + condition de déblocage.
-const CAT_SKINS = {
-  matiere: {nom:'Matière', opts:[
-    {v:'granit',nom:'Granit',cond:null},
-    {v:'bois',nom:'Bois',cond:'5 fins de partie survécues'},
-    {v:'obsidienne',nom:'Obsidienne',cond:'10 victoires loups'},
-    {v:'marbre',nom:'Marbre',cond:'10 victoires village'},
-    {v:'os',nom:'Os',cond:'3 morts la 1ʳᵉ nuit'} ]},
-  gravure: {nom:'Gravure', opts:[
-    {v:'initiale',nom:'Initiale',cond:null},
-    {v:'rune_s',nom:'ᛋ',cond:null},{v:'rune_b',nom:'ᛒ',cond:null},{v:'rune_m',nom:'ᛗ',cond:null},
-    {v:'rune_n',nom:'ᚾ',cond:null},{v:'rune_l',nom:'ᛚ',cond:null},{v:'rune_r',nom:'ᚱ',cond:null},
-    {v:'rune_t',nom:'ᛏ',cond:null},{v:'rune_e',nom:'ᛖ',cond:null},
-    {v:'croissant_libre',nom:'Croissant',cond:null},{v:'etoile',nom:'Étoile',cond:null},
-    {v:'feuille',nom:'Feuille',cond:null},{v:'montagne',nom:'Montagne',cond:null},
-    {v:'croissant',nom:'Lune pleine',cond:'15 aubes survécues'},
-    {v:'oeil',nom:'Œil',cond:'5 loups démasqués'},
-    {v:'patte',nom:'Patte',cond:'20 villageois dévorés'},
-    {v:'gibet',nom:'Gibet',cond:'1 loup pendu au 1ᵉʳ vote'},
-    {v:'coeur',nom:'Cœur',cond:'1 victoire des amoureux'} ]},
-  aura: {nom:'Aura', opts:[
-    {v:'aucune',nom:'Aucune',cond:null},
-    {v:'braise',nom:'Braise',cond:'25 parties jouées'},
-    {v:'lucioles',nom:'Lucioles',cond:'5 sauvetages sorcière'},
-    {v:'brume',nom:'Brume',cond:'10 accusations survécues'},
-    {v:'lune',nom:'Lune',cond:'50 parties jouées'} ]},
-  mort: {nom:'Mort', opts:[
-    {v:'fissure',nom:'Fissure',cond:null},
-    {v:'poussiere',nom:'Poussière',cond:'10 parties jouées'},
-    {v:'mousse',nom:'Mousse',cond:'10 fins survécues'},
-    {v:'brume_mort',nom:'Brume',cond:'5 accusations survécues'} ]},
-  teinte: {nom:'Teinte', opts:[
-    {v:'os',nom:'Os',cond:null},{v:'ambre',nom:'Ambre',cond:null},
-    {v:'sang_pale',nom:'Sang pâle',cond:null},{v:'brume',nom:'Brume',cond:null} ]}
-};
-// Symbole gravé pour un joueur (initiale par défaut / si skin absent).
 const graveSymbole = j => {
   const g = j.profils?.skin_gravure;
   if(g && g !== 'initiale' && GRAVURES[g]) return GRAVURES[g];
@@ -1459,7 +1643,7 @@ function rendreSalon(){
   $('salonNb').textContent = joueurs.length;
   $('salonJoueurs').innerHTML = joueurs.map(j => `
     <div style="text-align:center;width:78px">
-      <div class="jeton">${avatarDe(j)}</div>
+      <div class="jeton ${MAT_CLASSE[j.profils?.skin_matiere] || 'm-granit'}"><span class="grave" style="--teinte:${teinteDe(j)}">${graveSymbole(j)}</span></div>
       <div class="nom-siege">${j.profils?.pseudo || '…'}${estBot(j) ? ' ⚙' : ''}</div>
     </div>`).join('');
 
@@ -1655,8 +1839,8 @@ function rendreCercle(){
     el.style.top  = (50 + 42 * Math.sin(angle)) + '%';
 
     const halo = vise ? ` style="box-shadow:0 0 0 ${3 + nbVotes * 2}px rgba(199,62,46,.22)"` : '';
-    const mat = ' mat-' + (j.profils?.skin_matiere || 'granit');
-    el.innerHTML = `<div class="jeton${mat}"${halo}><span class="grave" style="color:${teinteDe(j)}">${graveSymbole(j)}</span></div>
+    const mat = ' ' + (MAT_CLASSE[j.profils?.skin_matiere] || 'm-granit');
+    el.innerHTML = `<div class="jeton${mat}"${halo}><span class="grave" style="--teinte:${teinteDe(j)}">${graveSymbole(j)}</span></div>
       <div class="nom-siege">${j.profils?.pseudo || '…'}${estBot(j) ? ' ⚙' : ''}</div>
       ${enVote && nbVotes ? `<div class="compteur-votes">${nbVotes} ✋</div>` : ''}`;
 
@@ -1716,7 +1900,7 @@ function rendreVoteMobile(){
     const nb = compteVotes(j.user_id);
     const moi_ = maCible === j.user_id;
     return `<div class="carte-vote${moi_ ? ' mon-vote' : ''}">
-      <div class="jeton">${avatarDe(j)}</div>
+      <div class="jeton ${MAT_CLASSE[j.profils?.skin_matiere] || 'm-granit'}"><span class="grave" style="--teinte:${teinteDe(j)}">${graveSymbole(j)}</span></div>
       <div class="cv-nom">${j.profils?.pseudo || '…'}${estBot(j) ? ' ⚙' : ''}</div>
       ${nb ? `<div class="cv-nb">${nb} ✋</div>` : ''}
       <button class="btn-voter" onclick="voterDirect('${j.user_id}')">${moi_ ? 'Voté ✓' : 'Voter'}</button>
@@ -2023,7 +2207,7 @@ const echapper = s => s.replace(/[&<>"']/g, c =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 /* ═══════════ FIN DE PARTIE ═══════════ */
-/* ---------- Forge (chantier 5, client) ---------- */
+/* ---------- LA FORGE (réf. forge_atelier_3.html, données réelles) ---------- */
 // Seuils MIROIR de skin_debloque() côté serveur (affichage seul ; le serveur
 // reste seul juge via choisir_skin — REFUS si non débloqué).
 const SEUILS = {
@@ -2037,11 +2221,76 @@ const SEUILS = {
   'mort:poussiere':['parties_jouees',10], 'mort:mousse':['survies_fin_de_partie',10],
   'mort:brume_mort':['accusations_survecues',5]
 };
-let forgeStats = {}, forgeSel = {};
+// Phrase d'action par exploit (bandeau de quête)
+const ACTIONS_STAT = {
+  villageois_devores:'La meute chasse cette nuit.',
+  loups_demasques_voyante:'La Voyante voit ce que les autres taisent.',
+  aubes_survecues:'Survis jusqu\'à l\'aube, encore.',
+  parties_jouees:'Chaque veillée compte.',
+  survies_fin_de_partie:'Tiens jusqu\'au bout de la nuit.',
+  victoires_loups:'Que les crocs l\'emportent.',
+  victoires_village:'Que le village triomphe.',
+  morts_premiere_nuit:'Le malheur aussi se grave.',
+  sauvetages_sorciere:'Une fiole peut tout changer.',
+  accusations_survecues:'Encaisse les soupçons, survis au vote.',
+  pendaisons_loup_premier_vote:'Un loup au gibet dès le premier matin.',
+  victoires_amoureux:'Aime, et survis à tout.'
+};
+// Catalogue complet : nom, condition en clair, rareté, légende (réf. + complétées)
+const CAT_SKINS = {
+  matiere: {nom:'Matière', opts:[
+    {v:'granit',nom:'Granit',cond:'La pierre de naissance',lore:'La pierre de naissance. Honnête, patiente, comme le village.'},
+    {v:'bois',nom:'Bois pétrifié',tier:'ouvragee',cond:'5 fins de partie survécues',lore:'Un arbre qui a refusé de mourir. Toi aussi, cinq fois.'},
+    {v:'obsidienne',nom:'Obsidienne',tier:'ouvragee',cond:'10 victoires loups',lore:'Née du feu, taillée dans la nuit. Elle ne se fend jamais deux fois.'},
+    {v:'marbre',nom:'Marbre pâle',tier:'ouvragee',cond:'10 victoires village',lore:'La pierre des justes. Elle veine au soleil des matins gagnés.'},
+    {v:'os',nom:'Os ancien',tier:'maitresse',cond:'3 morts la 1ʳᵉ nuit',lore:'Trois fois tombé avant l\'aube. Le village se souvient des malchanceux.'} ]},
+  gravure: {nom:'Gravure', opts:[
+    {v:'initiale',nom:'Initiale',cond:'Choix libre',lore:'La première lettre d\'un nom qu\'on murmure encore.'},
+    {v:'rune_s',nom:'Sowilo',cond:'Choix libre',lore:'Sowilo, le soleil. Un bon départ.'},
+    {v:'rune_b',nom:'Berkana',cond:'Choix libre',lore:'Berkana, le bouleau. Ce qui repousse toujours.'},
+    {v:'rune_m',nom:'Mannaz',cond:'Choix libre',lore:'Mannaz, l\'humain. Fragile, donc précieux.'},
+    {v:'rune_n',nom:'Naudiz',cond:'Choix libre',lore:'Naudiz, le besoin. La faim rend lucide.'},
+    {v:'rune_l',nom:'Laguz',cond:'Choix libre',lore:'Laguz, l\'eau. Elle finit toujours par passer.'},
+    {v:'rune_r',nom:'Raido',cond:'Choix libre',lore:'Raido, la route. On ne revient jamais pareil.'},
+    {v:'rune_t',nom:'Tiwaz',cond:'Choix libre',lore:'Tiwaz, la justice. Une pointe vers le ciel.'},
+    {v:'rune_e',nom:'Ehwaz',cond:'Choix libre',lore:'Ehwaz, le cheval. La confiance qui porte.'},
+    {v:'croissant_libre',nom:'Croissant',cond:'Choix libre',lore:'L\'ongle de la nuit posé sur la pierre.'},
+    {v:'etoile',nom:'Étoile',cond:'Choix libre',lore:'L\'étoile qui guide les nuits sans lune.'},
+    {v:'feuille',nom:'Feuille',cond:'Choix libre',lore:'Une feuille tombée du monde d\'avant.'},
+    {v:'montagne',nom:'Montagne',cond:'Choix libre',lore:'La montagne ne recule pas.'},
+    {v:'croissant',nom:'Lune pleine',tier:'ouvragee',cond:'15 aubes survécues',lore:'Quinze aubes vues de tes propres yeux.'},
+    {v:'oeil',nom:'L\'Œil',tier:'ouvragee',cond:'5 loups démasqués',lore:'L\'Œil qui a vu les loups sous la peau des hommes.'},
+    {v:'patte',nom:'La Patte',tier:'maitresse',cond:'20 villageois dévorés',lore:'Vingt proies. La meute connaît ton nom.'},
+    {v:'gibet',nom:'Le Gibet',tier:'maitresse',cond:'Un loup pendu au 1ᵉʳ vote',lore:'Un seul vote, un seul matin, un loup pendu. La légende du premier jour.'},
+    {v:'coeur',nom:'Le Cœur',tier:'maitresse',cond:'1 victoire des amoureux',lore:'Deux cœurs contre le village entier.'} ]},
+  aura: {nom:'Aura', opts:[
+    {v:'aucune',nom:'Aucune',cond:'La pierre nue',lore:'La pierre nue. Rien à prouver.'},
+    {v:'braise',nom:'Braise',tier:'ouvragee',cond:'25 parties jouées',lore:'Vingt-cinq veillées au coin du feu.'},
+    {v:'lucioles',nom:'Lucioles',tier:'ouvragee',cond:'5 sauvetages en Sorcière',lore:'Les lucioles suivent celles qui rendent la vie.'},
+    {v:'brume',nom:'Brume',tier:'ouvragee',cond:'10 accusations survécues',lore:'Jamais coupable, jamais blanc. La brume te connaît.'},
+    {v:'lune',nom:'Clair de lune',tier:'maitresse',cond:'50 parties jouées',lore:'Cinquante nuits. La lune reconnaît les siens.'} ]},
+  mort: {nom:'Mort', opts:[
+    {v:'fissure',nom:'La Fissure',cond:'Survole pour voir',lore:'Toute pierre finit par céder.'},
+    {v:'poussiere',nom:'La Poussière',tier:'ouvragee',cond:'10 parties jouées',lore:'Partir sans bruit, avoir eu raison jusqu\'au bout.'},
+    {v:'mousse',nom:'La Mousse',tier:'maitresse',cond:'10 fins survécues',lore:'La forêt reprend les siens, doucement.'},
+    {v:'brume_mort',nom:'La Brume',tier:'maitresse',cond:'5 accusations survécues',lore:'Jamais accusé, jamais vu. La brume seule sait.'} ]},
+  teinte: {nom:'Teinte', opts:[
+    {v:'os',nom:'Os',cond:'Choix libre',lore:'L\'encre des vieux ossuaires.'},
+    {v:'ambre',nom:'Ambre',cond:'Choix libre',lore:'La sève dorée des soirs d\'été.'},
+    {v:'sang_pale',nom:'Sang pâle',cond:'Choix libre',lore:'Le souvenir d\'une blessure ancienne.'},
+    {v:'brume',nom:'Brume',cond:'Choix libre',lore:'Le gris des matins sans réponse.'} ]}
+};
+const LORE_DEFAUT = 'Chaque partie jouée est un coup de burin.';
+
+let forgeStats = {}, forgeSel = {}, forgeCat = 'matiere';
+let essaiTimer = null, enCeremonie = false, queteCible = null;
+
 const forgeDebloque = (cat, v) => {
   const s = SEUILS[cat + ':' + v];
   return !s || (forgeStats[s[0]] || 0) >= s[1];
 };
+const glypheDe = v => (v === 'initiale' || !GRAVURES[v])
+  ? (profil?.pseudo || '?').trim().charAt(0).toUpperCase() : GRAVURES[v];
 
 async function ouvrirForge(){
   montrer('ecranForge');
@@ -2054,55 +2303,185 @@ async function ouvrirForge(){
   const p = pr.data || {};
   forgeSel = {matiere:p.skin_matiere||'granit', gravure:p.skin_gravure||'initiale',
               aura:p.skin_aura||'aucune', mort:p.skin_mort||'fissure', teinte:p.skin_teinte||'os'};
-  rendreForge();
+  $('fPseudo').textContent = profil?.pseudo || '';
+  forgeCat = 'matiere';
+  rendreOngletsForge(); rendrePanneau(); rendrePierreForge();
+  rendreCollection(); rendreQuete();
+  $('fLore').textContent = LORE_DEFAUT; $('fLore').classList.remove('vive');
 }
 
-function forgeGlyphe(cat, v){
-  if(cat === 'gravure') return v === 'initiale' ? (profil?.pseudo||'?').trim().charAt(0).toUpperCase() : (GRAVURES[v]||'?');
-  if(cat === 'teinte') return '●';
-  return '◆';
+function rendrePierreForge(sel){
+  const s = sel || forgeSel;
+  const p = $('fPierre');
+  p.className = 'pierre ' + (MAT_CLASSE[s.matiere] || 'm-granit')
+    + (AURA_CLASSE[s.aura] ? ' ' + AURA_CLASSE[s.aura] : '');
+  p.style.setProperty('--teinte', TEINTES[s.teinte] || TEINTES.os);
+  $('fRune').textContent = glypheDe(s.gravure);
 }
 
-function rendreForge(){
-  const wrap = $('forgeCategories'); wrap.innerHTML = '';
-  for(const [cat, def] of Object.entries(CAT_SKINS)){
-    const bloc = document.createElement('div');
-    let html = `<div class="forge-cat">${def.nom}</div><div class="forge-grille">`;
-    for(const o of def.opts){
-      const ok = forgeDebloque(cat, o.v);
-      const choisi = forgeSel[cat] === o.v;
-      const couleur = cat === 'teinte' ? TEINTES[o.v] : 'var(--os)';
-      const apercuMat = cat === 'matiere' ? ' mat-' + o.v : '';
-      html += `<div class="forge-opt${choisi?' on':''}${ok?'':' verrou'}" data-cat="${cat}" data-v="${o.v}">
-        <div class="forge-pierre${apercuMat}"><span class="grave" style="color:${couleur}">${forgeGlyphe(cat,o.v)}</span></div>
-        <span class="fo-nom">${ok?'':'🔒 '}${o.nom}</span>
-        ${(!ok && o.cond)?`<span class="fo-cond">${o.cond}</span>`:''}
-      </div>`;
-    }
-    bloc.innerHTML = html + '</div>';
-    wrap.appendChild(bloc);
-  }
-  wrap.querySelectorAll('.forge-opt').forEach(el => {
+function rendreOngletsForge(){
+  $('fOnglets').innerHTML = Object.entries(CAT_SKINS).map(([cat, def]) =>
+    `<button class="${cat === forgeCat ? 'on' : ''}" data-cat="${cat}">${def.nom}</button>`).join('');
+  $('fOnglets').querySelectorAll('button').forEach(b =>
+    b.onclick = () => { forgeCat = b.dataset.cat; rendreOngletsForge(); rendrePanneau(); });
+}
+
+function condAffichee(cat, o){
+  const s = SEUILS[cat + ':' + o.v];
+  if(!s) return o.cond;
+  const [stat, cible] = s, val = Math.min(forgeStats[stat] || 0, cible);
+  return forgeDebloque(cat, o.v) ? o.cond + ' ✓' : `${val} / ${cible} — ${o.cond}`;
+}
+
+function rendrePanneau(){
+  const def = CAT_SKINS[forgeCat], g = $('fGrille');
+  g.innerHTML = def.opts.map(o => {
+    const ok = forgeDebloque(forgeCat, o.v);
+    const sel = forgeSel[forgeCat] === o.v;
+    const s = SEUILS[forgeCat + ':' + o.v];
+    const pct = s ? Math.min(100, Math.round(100 * (forgeStats[s[0]] || 0) / s[1])) : 100;
+    const matMini = forgeCat === 'matiere' ? (MAT_CLASSE[o.v] || 'm-granit') : (MAT_CLASSE[forgeSel.matiere] || 'm-granit');
+    const auraMini = forgeCat === 'aura' && AURA_CLASSE[o.v] ? ' ' + AURA_CLASSE[o.v] : '';
+    const glyphe = forgeCat === 'gravure' ? glypheDe(o.v) : glypheDe(forgeSel.gravure);
+    const teinteCss = forgeCat === 'teinte' ? TEINTES[o.v] : (TEINTES[forgeSel.teinte] || TEINTES.os);
+    const apercu = forgeCat === 'teinte'
+      ? `<div class="pastille" style="background:${TEINTES[o.v]}"></div>`
+      : `<div class="mini ${matMini}${auraMini}"><span class="grave" style="--teinte:${teinteCss}">${glyphe}</span></div>`;
+    return `<div class="opt${sel ? ' sel' : ''}${ok ? '' : ' lock'}"
+      data-cat="${forgeCat}" data-v="${o.v}" data-c="${forgeCat === 'matiere' ? (MAT_CLASSE[o.v] || '') : ''}"
+      ${o.tier ? `data-tier="${o.tier}"` : ''} ${forgeCat === 'mort' ? `data-mort="${o.v}"` : ''}>
+      ${o.tier ? `<i class="tier t-${o.tier}">${o.tier === 'maitresse' ? 'Maîtresse' : 'Ouvragée'}</i>` : ''}
+      <div class="apercu">${apercu}
+        ${!ok && s ? `<div class="anneau-p" style="--p:${pct}"><b>${Math.min(forgeStats[s[0]] || 0, s[1])}/${s[1]}</b></div>` : ''}
+      </div>
+      <h3>${o.nom}</h3><div class="cond">${condAffichee(forgeCat, o)}</div>
+      <div class="part" data-part="${forgeCat}:${o.v}"></div>
+    </div>`;
+  }).join('');
+  g.querySelectorAll('.opt').forEach(el => {
     el.onclick = () => {
       const {cat, v} = el.dataset;
-      if(!forgeDebloque(cat, v)){ $('forgeMsg').textContent = 'Pas encore débloqué.'; return; }
-      forgeSel[cat] = v; $('forgeMsg').textContent = ''; rendreForge();
+      const o = CAT_SKINS[cat].opts.find(x => x.v === v);
+      if(el.classList.contains('lock')){ essayerForge(cat, v, o); return; }
+      forgeSel[cat] = v;
+      g.querySelectorAll('.opt').forEach(x => x.classList.remove('sel'));
+      el.classList.add('sel');
+      rendrePierreForge(); burinForge();
+      montrerLore(o.lore);
+      rendreQuete();
     };
   });
-  majApercuForge();
 }
 
-function majApercuForge(){
-  const ap = $('forgeApercu');
-  ap.className = 'ap-pierre mat-' + forgeSel.matiere;
-  const g = forgeSel.gravure === 'initiale'
-    ? (profil?.pseudo||'?').trim().charAt(0).toUpperCase() : (GRAVURES[forgeSel.gravure]||'?');
-  ap.querySelector('.grave').textContent = g;
-  ap.querySelector('.grave').style.color = TEINTES[forgeSel.teinte] || TEINTES.os;
-  // aura sur l'aperçu
-  ap.parentElement.querySelectorAll('.ap-aura').forEach(e=>e.remove());
-  $('forgeApercuNom').textContent = CAT_SKINS.aura.opts.find(o=>o.v===forgeSel.aura)?.nom !== 'Aucune'
-    ? 'Aura : ' + CAT_SKINS.aura.opts.find(o=>o.v===forgeSel.aura).nom : '';
+function montrerLore(txt){
+  clearTimeout(essaiTimer);
+  $('fLore').textContent = txt || LORE_DEFAUT; $('fLore').classList.add('vive');
+  essaiTimer = setTimeout(() => {
+    $('fLore').textContent = LORE_DEFAUT; $('fLore').classList.remove('vive');
+  }, 3200);
+}
+
+/* Essayage spectral : une pièce verrouillée s'applique 3 s, puis retour (rien ne persiste) */
+function essayerForge(cat, v, o){
+  if(enCeremonie) return;
+  clearTimeout(essaiTimer);
+  const essai = {...forgeSel}; essai[cat] = v;
+  rendrePierreForge(cat === 'mort' ? forgeSel : essai);   // une mort ne se « porte » pas
+  $('fPierre').classList.add('spectral'); $('fSpectreTag').classList.add('on');
+  $('fLore').textContent = o?.lore || LORE_DEFAUT; $('fLore').classList.add('vive');
+  essaiTimer = setTimeout(() => {
+    rendrePierreForge();
+    $('fPierre').classList.remove('spectral'); $('fSpectreTag').classList.remove('on');
+    $('fLore').textContent = LORE_DEFAUT; $('fLore').classList.remove('vive');
+  }, 3000);
+}
+
+/* Coup de burin : flash + étincelles (réf.) */
+function burinForge(n = 5){
+  const p = $('fPierre');
+  p.classList.remove('frappe'); void p.offsetWidth; p.classList.add('frappe');
+  for(let i = 0; i < n; i++){
+    const e = document.createElement('span'); e.className = 'etincelle';
+    const a = Math.random() * Math.PI * 2, d = 46 + Math.random() * 44;
+    e.style.setProperty('--dx', Math.cos(a) * d + 'px');
+    e.style.setProperty('--dy', Math.sin(a) * d - 24 + 'px');
+    e.style.left = '50%'; e.style.top = '46%';
+    p.parentElement.appendChild(e); setTimeout(() => e.remove(), 570);
+  }
+}
+function poussiereForge(){
+  const p = $('fPierre');
+  for(let i = 0; i < 6; i++){
+    const g = document.createElement('span'); g.className = 'grain-p';
+    g.style.left = (34 + Math.random() * 32) + '%'; g.style.bottom = '18%';
+    g.style.animationDelay = (Math.random() * .3) + 's';
+    p.parentElement.appendChild(g); setTimeout(() => g.remove(), 1300);
+  }
+}
+
+/* Collection : X / Y tailles, calculé depuis les déblocages réels */
+function rendreCollection(){
+  let total = 0, ouvertes = 0;
+  for(const [cat, def] of Object.entries(CAT_SKINS))
+    for(const o of def.opts){ total++; if(forgeDebloque(cat, o.v)) ouvertes++; }
+  $('fCollection').textContent = `${ouvertes} / ${total} tailles`;
+  $('fCollectionBarre').style.width = Math.round(100 * ouvertes / total) + '%';
+}
+
+/* Quête « Prochaine taille » : LE déblocage le plus proche (meilleur ratio) */
+function rendreQuete(){
+  let best = null;
+  for(const [cat, def] of Object.entries(CAT_SKINS)){
+    for(const o of def.opts){
+      const s = SEUILS[cat + ':' + o.v];
+      if(!s || forgeDebloque(cat, o.v)) continue;
+      const ratio = (forgeStats[s[0]] || 0) / s[1];
+      if(!best || ratio > best.ratio) best = {cat, o, s, ratio};
+    }
+  }
+  queteCible = best;
+  const q = $('fQuete');
+  if(!best){ q.style.display = 'none'; return; }
+  q.style.display = '';
+  const [stat, cible] = best.s, val = forgeStats[stat] || 0, reste = cible - val;
+  $('fQueteTitre').textContent = 'Prochaine taille — ' + best.o.nom;
+  $('fQueteTxt').textContent = `Encore ${reste} : ${ACTIONS_STAT[stat] || 'Continue de jouer.'}`;
+  $('fQueteBarre').style.width = Math.min(100, Math.round(100 * val / cible)) + '%';
+  $('fQueteGlyphe').textContent = best.cat === 'gravure' ? glypheDe(best.o.v) : glypheDe(forgeSel.gravure);
+}
+
+/* Cérémonie d'aperçu (réf.) : ombre → fissures de lumière → frappe → bandeau TAILLÉE.
+   Purement visuel : rien n'est débloqué ni persisté. */
+function ceremonieForge(){
+  if(enCeremonie || !queteCible) return; enCeremonie = true;
+  clearTimeout(essaiTimer);
+  const p = $('fPierre');
+  p.classList.remove('spectral'); $('fSpectreTag').classList.remove('on');
+  const {cat, o} = queteCible;
+  p.classList.add('ombre');
+  $('fLore').textContent = 'La roche frémit…'; $('fLore').classList.add('vive');
+  setTimeout(() => {
+    [[46,20,64,'14deg'],[72,34,52,'-24deg'],[30,44,58,'38deg']].forEach(([x,y,h,r]) => {
+      const l = document.createElement('span'); l.className = 'lueur';
+      l.style.left = x+'%'; l.style.top = y+'%'; l.style.height = h+'px'; l.style.setProperty('--r', r);
+      p.appendChild(l);
+    });
+  }, 500);
+  setTimeout(() => {
+    p.classList.remove('ombre');
+    p.querySelectorAll('.lueur').forEach(l => l.remove());
+    const essai = {...forgeSel}; if(cat !== 'mort') essai[cat] = o.v;
+    rendrePierreForge(essai); burinForge(10); poussiereForge();
+    $('fBandeauNom').textContent = o.nom;
+    $('fBandeau').classList.add('on');
+    $('fLore').textContent = o.lore || LORE_DEFAUT;
+  }, 1700);
+  setTimeout(() => {
+    $('fBandeau').classList.remove('on');
+    rendrePierreForge();
+    $('fLore').textContent = LORE_DEFAUT; $('fLore').classList.remove('vive');
+    enCeremonie = false;
+  }, 4600);
 }
 
 async function sauverForge(){
@@ -2111,7 +2490,9 @@ async function sauverForge(){
     p_matiere:forgeSel.matiere, p_gravure:forgeSel.gravure, p_aura:forgeSel.aura,
     p_mort:forgeSel.mort, p_teinte:forgeSel.teinte
   });
-  $('forgeMsg').textContent = error ? ('Refusé : ' + error.message) : 'Pierre gravée ✔';
+  if(error){ $('forgeMsg').textContent = 'Refusé : ' + error.message; return; }
+  $('forgeMsg').textContent = 'Pierre gravée ✔';
+  burinForge(8);
 }
 
 function rendreFin(){
@@ -2132,7 +2513,7 @@ function rendreFin(){
     const info = r ? ROLES[r.role] : null;
     return `<div style="display:flex;align-items:center;gap:12px;padding:10px;
                         border-bottom:1px solid var(--bord);${j.vivant?'':'opacity:.5'}">
-      <div class="jeton" style="width:40px;height:40px;font-size:17px">${avatarDe(j)}</div>
+      <div class="jeton ${MAT_CLASSE[j.profils?.skin_matiere] || 'm-granit'}" style="width:40px;height:40px"><span class="grave" style="--teinte:${teinteDe(j)};font-size:17px">${graveSymbole(j)}</span></div>
       <div style="flex:1">
         <div style="font-weight:800">${j.profils?.pseudo || '—'}${estBot(j) ? ' ⚙' : ''}</div>
         <div class="muet">${j.vivant ? 'Survivant' : (j.cause_mort || 'mort') + ' — nuit ' + (j.mort_au_cycle||'?')}</div>
