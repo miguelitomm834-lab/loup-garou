@@ -1016,6 +1016,11 @@ body.ambiance-jour .siege[class*="aura-"] .jeton::before{opacity:.28}
         <input id="authMdp" type="password" placeholder="Mot de passe" autocomplete="current-password">
         <button class="btn" onclick="seConnecter()">Se connecter</button>
         <button class="btn-fantome" onclick="sInscrire()">Créer un compte</button>
+        <div style="display:flex;align-items:center;gap:12px;margin:4px 0;color:var(--faible);font-size:12px;font-family:'Jost',sans-serif;letter-spacing:.1em">
+          <span style="flex:1;height:1px;background:var(--bord)"></span>OU<span style="flex:1;height:1px;background:var(--bord)"></span>
+        </div>
+        <button class="btn-fantome" onclick="jouerInvite()">Jouer en invité — sans e-mail</button>
+        <p class="muet" style="text-align:center;font-size:12px">Une pierre t'est prêtée le temps d'une partie.</p>
       </div>
     </div>
   </div>
@@ -1319,6 +1324,19 @@ async function sInscrire(){
   if(error) return erreur('authErreur', error.message);
   erreur('authErreur', '');
   alert('Compte créé. Vérifie tes mails si la confirmation est activée, puis connecte-toi.');
+}
+
+async function jouerInvite(){
+  const pseudo = $('authPseudo').value.trim();
+  // Pseudo optionnel : s'il est trop court, le trigger génère « Villageois-xxxxx ».
+  const opts = pseudo.length >= 3 ? {options:{data:{pseudo}}} : {};
+  const {error} = await sb.auth.signInAnonymously(opts);
+  if(error) return erreur('authErreur',
+    /disabled|anonymous/i.test(error.message)
+      ? 'Le mode invité n\'est pas encore activé côté serveur.'
+      : error.message);
+  erreur('authErreur', '');
+  await demarrer();
 }
 
 async function seConnecter(){
