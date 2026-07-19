@@ -1421,6 +1421,7 @@ async function entrerDansPartie(id){
   partieId = id;
   mortsConnus = new Set(); mortsInit = false; roleAnime = false;
   phasePrec = null; cyclePrec = null;
+  dernierNarrateurLu = null;                     // nouvelle partie : on repart sans voiser l'historique
   if(canal) sb.removeChannel(canal);
 
   canal = sb.channel('partie:' + id)
@@ -1978,11 +1979,25 @@ async function envoiRapide(txt){
   if(error) alert("Tu ne peux pas parler sur ce canal maintenant.");
 }
 
+let dernierNarrateurLu = null;   // cree_le du dernier message narrateur déjà voisé
 async function chargerMessages(){
   const {data} = await sb.from('messages')
     .select('*, profils(pseudo, avatar)').eq('partie_id', partieId)
     .eq('canal', canalChat).order('cree_le').limit(100);
   messages = data || [];
+
+  // Voix du narrateur : seulement les messages système arrivés APRÈS le dernier lu.
+  // Premier chargement (dernierNarrateurLu null) : on se cale sans rien jouer.
+  const sysMsgs = messages.filter(m => m.user_id == null);
+  if(sysMsgs.length){
+    const dernier = sysMsgs[sysMsgs.length - 1];
+    if(dernierNarrateurLu !== null && dernier.cree_le > dernierNarrateurLu){
+      Ambiance.narrateur(dernier.contenu);       // une seule voix : la plus récente
+    }
+    dernierNarrateurLu = dernier.cree_le;
+  } else if(dernierNarrateurLu === null){
+    dernierNarrateurLu = '';                      // partie sans annonce encore : armé
+  }
 
   $('chatFil').innerHTML = messages.length ? messages.map(m => {
       const sys = m.user_id == null;               // message du narrateur (conteur)
@@ -2158,6 +2173,7 @@ const Ambiance = (() => {
     const b = document.getElementById('btnSon');
     if(b){ b.textContent = coupe ? '🔇' : '🔊'; b.classList.toggle('coupe', coupe); }
     if(master) master.gain.setTargetAtTime(coupe ? 0 : .5, T(), .1);
+    if(coupe) voixStop();          // coupe aussi la voix du narrateur en cours
     if(!coupe) debloquer();
   }
 
@@ -2305,7 +2321,54 @@ const Ambiance = (() => {
     victoire_village: () => cloche(4), victoire_loups: () => hurlement(.2), victoire_amoureux: harpe
   })[nom]?.(); } catch(e){} };
 
-  return { debloquer, basculer, phase, cue };
+  // --- Voix du narrateur (fichiers mp3 dans assets/voix/, manifest optionnel) ---
+  // Silence total si manifest absent, fichier manquant ou 404 : le texte suffit.
+  const VOIX_DIR = 'assets/voix';
+  let manifest;            // undefined = pas encore tenté, null = indisponible, objet = ok
+  let voixEl = null;
+  async function chargerManifest(){
+    if(manifest !== undefined) return manifest;
+    try {
+      const r = await fetch(VOIX_DIR + '/manifest.json', {cache:'force-cache'});
+      manifest = r.ok ? ((await r.json()).situations || null) : null;
+    } catch(e){ manifest = null; }
+    return manifest;
+  }
+  // Déduit la situation à partir du texte du narrateur. Les morts sont testées
+  // AVANT les victoires (une annonce de mort révèle un rôle « Villageois »/« Loup »).
+  const SITUATIONS = [
+    [/survit pas|rejoint|aime qu/i,                         'chagrin'],
+    [/son fusil|arme une derni/i,                            'chasseur_leve'],
+    [/coup de feu|ajuste et abat|chasseur emporte/i,         'mort_tir'],
+    [/tranch|corde se tend|sous les hu|pendu haut|ira pas plus loin|chafaud/i, 'mort_lynche'],
+    [/petit matin|dans le silence|gorge ouverte|se r.veillera/i, 'mort_matin'],
+    [/village intact|appel ce matin|aube est douce/i,        'nuit_tranquille'],
+    [/voix se sont partag|faute de majorit|corde reste vide|site, se d/i, 'vote_egalite'],
+    [/nuit tombe|lampes s|obscurit/i,                        'nuit_tombe'],
+    [/de l.amour|amoureux/i,                                 'victoire_amoureux'],
+    [/loups-garous|loups triomphent|crocs et du sang|ma.tres du village/i, 'victoire_loups'],
+    [/villageois|triomph|dormir en paix|village l.emporte/i, 'victoire_village'],
+  ];
+  const situationDe = t => { for(const [re, k] of SITUATIONS) if(re.test(t)) return k; return null; };
+  async function narrateur(texte){
+    if(!ctx || coupe || !texte) return;         // ctx existe = 1er geste fait ; respecte le muet
+    const m = await chargerManifest();
+    if(!m) return;
+    const sit = situationDe(texte);
+    const liste = sit && m[sit];
+    if(!liste || !liste.length) return;
+    const fichier = liste[Math.floor(Math.random() * liste.length)];
+    try {
+      if(!voixEl){ voixEl = new Audio(); voixEl.preload = 'none'; voixEl.volume = 1; }
+      voixEl.pause();                            // une seule voix à la fois : coupe la précédente
+      voixEl.src = VOIX_DIR + '/' + fichier;
+      voixEl.currentTime = 0;
+      voixEl.play().catch(() => {});             // 404 / autoplay bloqué → silencieux
+    } catch(e){}
+  }
+  const voixStop = () => { try { voixEl && voixEl.pause(); } catch(e){} };
+
+  return { debloquer, basculer, phase, cue, narrateur };
 })();
 // Déblocage au premier geste (autoplay) + resynchro de la nappe
 ['pointerdown','keydown','touchstart'].forEach(ev =>

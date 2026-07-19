@@ -1,0 +1,49 @@
+{
+  "note": "Voix synthétiques provisoires (Piper, licence libre). À remplacer par les enregistrements humains, mêmes noms de fichiers.",
+  "situations": {
+    "nuit_tombe": [
+      "nuit_tombe_1.mp3",
+      "nuit_tombe_2.mp3",
+      "nuit_tombe_3.mp3"
+    ],
+    "mort_matin": [
+      "mort_matin_1.mp3",
+      "mort_matin_2.mp3",
+      "mort_matin_3.mp3"
+    ],
+    "nuit_tranquille": [
+      "nuit_tranquille_1.mp3",
+      "nuit_tranquille_2.mp3",
+      "nuit_tranquille_3.mp3"
+    ],
+    "mort_lynche": [
+      "mort_lynche_1.mp3",
+      "mort_lynche_2.mp3",
+      "mort_lynche_3.mp3"
+    ],
+    "vote_egalite": [
+      "vote_egalite_1.mp3"
+    ],
+    "chagrin": [
+      "chagrin_1.mp3"
+    ],
+    "chasseur_leve": [
+      "chasseur_leve_1.mp3",
+      "chasseur_leve_2.mp3",
+      "chasseur_leve_3.mp3"
+    ],
+    "mort_tir": [
+      "mort_tir_1.mp3",
+      "mort_tir_2.mp3"
+    ],
+    "victoire_village": [
+      "victoire_village_1.mp3"
+    ],
+    "victoire_loups": [
+      "victoire_loups_1.mp3"
+    ],
+    "victoire_amoureux": [
+      "victoire_amoureux_1.mp3"
+    ]
+  }
+}
