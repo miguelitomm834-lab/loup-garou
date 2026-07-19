@@ -987,7 +987,9 @@ const ROLES = {
   cupidon    : {nom:'Cupidon', emoji:'🏹', camp:'Camp du village',
     desc:"La première nuit, lie deux destins. Si l'un meurt, l'autre suit."}
 };
-const AVATARS = {fauve:'🦊',roux:'🦝',duchesse:'🐈',pie:'🐦',chaperon:'🧕'};
+/* Un animal unique par joueur, attribué par sa place dans la partie
+   (place unique 1..12 → stable toute la partie, distinct pour chacun). */
+const ANIMAUX = ['🦊','🦝','🐈','🦉','🦡','🦌','🐗','🐦‍⬛','🦔','🦦','🐇','🐻'];
 
 /* ---------- État ---------- */
 let moi=null, profil=null, partie=null, joueurs=[], roles=[], votes=[], messages=[], passages=[];
@@ -1000,7 +1002,7 @@ const DUREES = {nuit:75, jour:150, vote:45, chasseur:30};
 const ANNEAU_CIRC = 2 * Math.PI * 29;   // r=29 dans le viewBox 0..100
 
 const $ = id => document.getElementById(id);
-const avatarDe = j => AVATARS[j.profils?.avatar] || '🐺';
+const avatarDe = j => ANIMAUX[(((j.place || 1) - 1) % ANIMAUX.length + ANIMAUX.length) % ANIMAUX.length] || '🐺';
 const estBot = j => !!j.profils?.est_bot;
 const monJoueur = () => joueurs.find(j => j.user_id === moi?.id);
 const monRole   = () => roles.find(r => r.user_id === moi?.id);
