@@ -2213,6 +2213,7 @@ const echapper = s => s.replace(/[&<>"']/g, c =>
 const SEUILS = {
   'matiere:bois':['survies_fin_de_partie',5], 'matiere:obsidienne':['victoires_loups',10],
   'matiere:marbre':['victoires_village',10], 'matiere:os':['morts_premiere_nuit',3],
+  'matiere:sang':['dernier_croc',1],
   'gravure:croissant':['aubes_survecues',15], 'gravure:oeil':['loups_demasques_voyante',5],
   'gravure:patte':['villageois_devores',20], 'gravure:gibet':['pendaisons_loup_premier_vote',1],
   'gravure:coeur':['victoires_amoureux',1],
@@ -2243,7 +2244,8 @@ const CAT_SKINS = {
     {v:'bois',nom:'Bois pétrifié',tier:'ouvragee',cond:'5 fins de partie survécues',lore:'Un arbre qui a refusé de mourir. Toi aussi, cinq fois.'},
     {v:'obsidienne',nom:'Obsidienne',tier:'ouvragee',cond:'10 victoires loups',lore:'Née du feu, taillée dans la nuit. Elle ne se fend jamais deux fois.'},
     {v:'marbre',nom:'Marbre pâle',tier:'ouvragee',cond:'10 victoires village',lore:'La pierre des justes. Elle veine au soleil des matins gagnés.'},
-    {v:'os',nom:'Os ancien',tier:'maitresse',cond:'3 morts la 1ʳᵉ nuit',lore:'Trois fois tombé avant l\'aube. Le village se souvient des malchanceux.'} ]},
+    {v:'os',nom:'Os ancien',tier:'maitresse',cond:'3 morts la 1ʳᵉ nuit',lore:'Trois fois tombé avant l\'aube. Le village se souvient des malchanceux.'},
+    {v:'sang',nom:'Pierre de sang',tier:'maitresse',cond:'Le dernier croc — gagne en dernier loup vivant',lore:'Quand la meute est tombée et que tu chasses seul, la lune saigne pour toi.'} ]},
   gravure: {nom:'Gravure', opts:[
     {v:'initiale',nom:'Initiale',cond:'Choix libre',lore:'La première lettre d\'un nom qu\'on murmure encore.'},
     {v:'rune_s',nom:'Sowilo',cond:'Choix libre',lore:'Sowilo, le soleil. Un bon départ.'},
